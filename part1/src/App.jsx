@@ -1,59 +1,40 @@
+import { useState } from "react";
+// import Button from "@mui/material/Button";
+import { Button, Typography } from "@mui/material";
 
 const App = () => {
-    const course = 'Half Stack application development';
-    const parts = [
-        { name: 'Fundamentals of React', exercises: 10 },
-        { name: 'Using props to pass data', exercises: 7 },
-        { name: 'State of a component', exercises: 14 },
-    ];
+  // save clicks of each button to its own state
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  //handle event click
+  //display total clicked for each
 
-//Header
-    const Header = ({course}) => {
+  const handleGoodClick = () => {
+    setGood(good+1)
+  };
+  const handleNeutralClick = () => {
+    setNeutral(neutral+1)
+  };
+  const handleBadClick = () => {
+    setBad(bad+1)
+  };
+  return (
+    <div>
+      <Typography variant="h5" component="h2">
+        Give feedback
+      </Typography>
+      <Button onClick={handleGoodClick} variant="outlined">good</Button>
+      <Button onClick={handleNeutralClick} variant="outlined">neutral</Button>
+      <Button onClick={handleBadClick} variant="outlined">bad</Button>
+      <Typography variant="h5" component="h2">
+        Statistics
+      </Typography>
+      <p>good {good}</p> 
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
+    </div>
+  );
+};
 
-        return (
-            <>
-                <h1>{course}</h1>
-            </>
-        )
-    }
-    //part
-    const Part = ({ part }) => {
-        return (
-            <p>
-                {part.name} {part.exercises}
-            </p>
-        );
-    };
-
-    //content
-    const Content = ({parts}) => {
-        return (
-            <div>
-                {parts.map((part, index) => (
-                    <Part key={index} part={part}/>
-                ))}
-            </div>
-        );
-    };
-    //total ex
-    const Total = ({parts}) => {
-        let totalExercise = 0;
-        for (const part of parts) {
-            totalExercise += part.exercises;
-        }
-        return (
-            <>
-                <p>Number of exercises {totalExercise}  </p>
-            </>
-        )
-    }
-    return (
-        <div>
-            <Header course = {course}/>
-            <Content parts={parts}/>
-            <Total parts={parts}/>
-        </div>
-    )
-}
-
-export default App
+export default App;
