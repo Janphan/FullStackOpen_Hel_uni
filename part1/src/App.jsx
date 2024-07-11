@@ -1,6 +1,19 @@
 import { useState } from "react";
 import { Button, Typography } from "@mui/material";
 
+//using Button Mui so rename this as ButtonR
+const ButtonR = ({ handleClick, text }) => (
+  <Button onClick={handleClick} variant="outlined">
+    {text}
+  </Button>
+)
+
+//component StatisticsLine to display value and text
+const StatisticsLine = ({text, value}) => {
+  return (
+    <p>{text} {value}</p>
+  )
+}
 // a proper place to define a component
 const Statistics = ({ good, neutral, bad, all, average, positive }) => {
   return (
@@ -8,12 +21,12 @@ const Statistics = ({ good, neutral, bad, all, average, positive }) => {
       <Typography variant="h5" component="h2">
         Statistics
       </Typography>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive} %</p>
+      <StatisticsLine text="good" value={good}/>
+      <StatisticsLine text="neutral" value={neutral}/>
+      <StatisticsLine text="bad" value={bad}/>
+      <StatisticsLine text="all" value={all}/>
+      <StatisticsLine text="average" value={average}/>
+      <StatisticsLine text="positive" value={positive}/>
     </>
   );
 };
@@ -67,15 +80,9 @@ const App = () => {
       <Typography variant="h5" component="h2">
         Give feedback
       </Typography>
-      <Button onClick={handleGoodClick} variant="outlined">
-        good
-      </Button>
-      <Button onClick={handleNeutralClick} variant="outlined">
-        neutral
-      </Button>
-      <Button onClick={handleBadClick} variant="outlined">
-        bad
-      </Button>
+      <ButtonR handleClick={handleGoodClick} text="good"/>
+      <ButtonR handleClick={handleNeutralClick} text="neutral"/>
+      <ButtonR handleClick={handleBadClick} text="bad"/>
       {all > 0 ? (
         <Statistics
           good={good}
