@@ -1,6 +1,6 @@
 import { useState } from "react";
 import React from "react";
-import { Button as MuiButton } from "@mui/material";
+import { Button as MuiButton, Typography } from "@mui/material";
 
 const getRandomAnecdote = (arr, setSelected) => {
   const randomIndex = Math.floor(Math.random() * arr.length);
@@ -33,16 +33,23 @@ const App = () => {
     newVotes[selected]++;
     setVotes(newVotes);
   };
+
+  const mostVotesIndex = votes.indexOf(Math.max(...votes));
+  console.log("mostVotesIndex", mostVotesIndex);
   return (
     <>
       <div>
+        <Typography variant="h5">Anecdotes of the day</Typography>
         <p>{anecdotes[selected]} </p>
-        <p>has {votes[selected]} votes</p>
+        
         <Button handleClick={handleVoteClick} text="vote" />
         <Button
           handleClick={() => getRandomAnecdote(anecdotes, setSelected)}
           text="Next anecdote"
         />
+        <Typography variant="h5">Anecdote with most votes</Typography>
+        {anecdotes[mostVotesIndex]}
+        <p>has {votes[mostVotesIndex]} votes</p>
       </div>
     </>
   );
