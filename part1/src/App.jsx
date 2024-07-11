@@ -1,19 +1,31 @@
 import { useState } from "react";
 import { Button, Typography } from "@mui/material";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 //using Button Mui so rename this as ButtonR
 const ButtonR = ({ handleClick, text }) => (
   <Button onClick={handleClick} variant="outlined">
     {text}
   </Button>
-)
+);
 
 //component StatisticsLine to display value and text
-const StatisticsLine = ({text, value}) => {
+const StatisticsLine = ({ text, value }) => {
   return (
-    <p>{text} {value}</p>
-  )
-}
+    <TableRow>
+      <TableCell>{text}</TableCell> 
+      <TableCell>{value}</TableCell>
+    </TableRow>
+  );
+};
 // a proper place to define a component
 const Statistics = ({ good, neutral, bad, all, average, positive }) => {
   return (
@@ -21,12 +33,27 @@ const Statistics = ({ good, neutral, bad, all, average, positive }) => {
       <Typography variant="h5" component="h2">
         Statistics
       </Typography>
-      <StatisticsLine text="good" value={good}/>
-      <StatisticsLine text="neutral" value={neutral}/>
-      <StatisticsLine text="bad" value={bad}/>
-      <StatisticsLine text="all" value={all}/>
-      <StatisticsLine text="average" value={average}/>
-      <StatisticsLine text="positive" value={positive}/>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Statistic</TableCell>
+              <TableCell>Value</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <StatisticsLine text="good" value={good} />
+            <StatisticsLine text="neutral" value={neutral} />
+            <StatisticsLine text="bad" value={bad} />
+            <StatisticsLine text="all" value={all} />
+            <StatisticsLine text="average" value={average.toFixed(2)} />
+            <StatisticsLine
+              text="positive"
+              value={`${positive.toFixed(2)} %`}
+            />
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 };
@@ -80,9 +107,9 @@ const App = () => {
       <Typography variant="h5" component="h2">
         Give feedback
       </Typography>
-      <ButtonR handleClick={handleGoodClick} text="good"/>
-      <ButtonR handleClick={handleNeutralClick} text="neutral"/>
-      <ButtonR handleClick={handleBadClick} text="bad"/>
+      <ButtonR handleClick={handleGoodClick} text="good" />
+      <ButtonR handleClick={handleNeutralClick} text="neutral" />
+      <ButtonR handleClick={handleBadClick} text="bad" />
       {all > 0 ? (
         <Statistics
           good={good}
