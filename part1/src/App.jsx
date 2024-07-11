@@ -76,14 +76,20 @@ const App = () => {
       <Button onClick={handleBadClick} variant="outlined">
         bad
       </Button>
-      <Statistics
-      good={good}
-      bad={bad}
-      neutral={neutral}
-      all={all}
-      average={average}
-      positive={positive}
-      />
+      {all > 0 ? (
+        <Statistics
+          good={good}
+          bad={bad}
+          neutral={neutral}
+          all={all}
+          average={average}
+          positive={positive}
+        />
+      ) : (
+        <Typography variant="h5" component="h2">
+          No feedback given
+        </Typography>
+      )}
     </div>
   );
 };
