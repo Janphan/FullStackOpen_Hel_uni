@@ -8,12 +8,19 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
     console.log("button clicked", event.target);
-    const personObject = {
-      content: newName,
-      id: String(persons.length + 1),
-    };
-    setPersons(persons.concat(personObject));
-    setNewName("");
+    // Check for duplicate names before adding
+    const duplicate = persons.find(person => person.content.toLowerCase() === newName.toLowerCase().trim())
+    if (duplicate) {
+      alert(`${newName} is already added to phonebook`)
+    } else {
+      const personObject = {
+        content: newName,
+        id: String(persons.length + 1),
+      };
+      setPersons(persons.concat(personObject));
+      setNewName("");
+    }
+
   };
   const handleNameChange = (event) => {
     console.log(event.target.value);
