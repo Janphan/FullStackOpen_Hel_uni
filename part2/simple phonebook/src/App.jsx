@@ -2,9 +2,15 @@ import { useEffect, useState } from "react";
 import Person from "./components/Person";
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [searchName, setSearchName] = useState("");
   const [showAll, setShowAll] = useState(true);
 
   const addName = (event) => {
@@ -46,17 +52,24 @@ const App = () => {
     console.log(event.target.value);
     setNewNumber(event.target.value);
   };
-  const toggleShowAll = () => {
-    setShowAll(!showAll);
-  };
+
+  const handleSearch = (event) => {
+    console.log("search", event.target.value);
+    setSearchName(event.target.value);
+    setShowAll(false);
+  }
 
   useEffect(() => {
     console.log("Updated persons list:", persons);
   }, [persons]);
+
+  const personsToShow = showAll
+    ? persons
+    : persons.filter(person => person.name.toLowerCase().includes(searchName.toLowerCase())) //equal to what here
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <form>Filter Name with a<input value={searchName} onChange={handleSearch} /></form>
       <form onSubmit={addName}>
         <div>
           Name: <input value={newName} onChange={handleNameChange} />
@@ -67,13 +80,13 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.length > 0 && (
+      {/* {persons.length > 0 && (
         <button onClick={toggleShowAll}>
           {showAll ? "Hide all" : "Show All"}
         </button>
-      )}
+      )} */}
       <ul>
-        {showAll && persons.map((person) => (
+        {personsToShow.map((person) => (
           <Person key={person.id} person={person} />
         ))}
       </ul>
