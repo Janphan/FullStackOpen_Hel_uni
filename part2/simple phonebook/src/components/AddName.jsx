@@ -1,4 +1,6 @@
 import { useState } from "react";
+import NameInput from "./NameInput";
+import NumberInput from "./NumberInput";
 
 export default function AddName({persons, setPersons}) {
 
@@ -45,10 +47,8 @@ export default function AddName({persons, setPersons}) {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <div>
-                    Name: <input value={newName} onChange={handleNameChange} />
-                </div>
-                <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
+                <NameInput newName={newName} handleNameChange={handleNameChange}/>
+                <NumberInput newNumber={newNumber} handleNumberChange={handleNumberChange}/>
                 <div>
                     <button type="submit">Add</button>
                 </div>
