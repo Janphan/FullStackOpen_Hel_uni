@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AddName from "./components/AddName";
 import FilterName from "./components/FilterName";
 import PersonsList from "./components/PersonsList";
+import NotificationMessage from "./components/NotificationMessage";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -13,6 +14,8 @@ const App = () => {
   ]);
   const [searchName, setSearchName] = useState("");
   const [showAll, setShowAll] = useState(true);
+  const [message, setMessage] = useState(null)
+
   useEffect(() => {
     console.log("Updated persons list:", persons);
   }, [persons]);
@@ -20,11 +23,17 @@ const App = () => {
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(searchName.toLowerCase())) //equal to what here
+
+  const showNotification = (name) => {
+    setMessage(`Added ${name}`);
+    setTimeout(() => setMessage(null), 3000); // Clear the message after 3 seconds
+  };
   return (
     <div>
       <h2>Phonebook</h2>
-      <FilterName searchName={searchName} setSearchName={setSearchName} />
-      <AddName persons={persons} setPersons={setPersons} />
+      <NotificationMessage message={message} />
+      <FilterName searchName={searchName} setSearchName={setPersons} />
+      <AddName persons={persons} setPersons={setPersons} onPersonAdded={showNotification} />
       <h2>Numbers</h2>
       <PersonsList persons={personsToShow} />
     </div>

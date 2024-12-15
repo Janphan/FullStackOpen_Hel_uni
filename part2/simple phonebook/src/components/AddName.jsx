@@ -2,7 +2,7 @@ import { useState } from "react";
 import NameInput from "./NameInput";
 import NumberInput from "./NumberInput";
 
-export default function AddName({persons, setPersons}) {
+export default function AddName({ persons, setPersons, onPersonAdded }) {
 
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
@@ -32,6 +32,7 @@ export default function AddName({persons, setPersons}) {
                 id: String(persons.length + 1),
             };
             setPersons(persons.concat(personObject));
+            onPersonAdded(trimmedName);
             setNewName("");
             setNewNumber("");
         }
@@ -47,8 +48,8 @@ export default function AddName({persons, setPersons}) {
     return (
         <>
             <form onSubmit={handleSubmit}>
-                <NameInput newName={newName} handleNameChange={handleNameChange}/>
-                <NumberInput newNumber={newNumber} handleNumberChange={handleNumberChange}/>
+                <NameInput newName={newName} handleNameChange={handleNameChange} />
+                <NumberInput newNumber={newNumber} handleNumberChange={handleNumberChange} />
                 <div>
                     <button type="submit">Add</button>
                 </div>
