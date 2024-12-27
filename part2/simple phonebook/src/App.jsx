@@ -4,6 +4,7 @@ import AddName from "./components/AddName";
 import FilterName from "./components/FilterName";
 import PersonsList from "./components/PersonsList";
 import NotificationMessage from "./components/NotificationMessage";
+import personsService from './services/persons';
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -15,18 +16,34 @@ const App = () => {
   const [searchName, setSearchName] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [message, setMessage] = useState(null)
+  const [error, setError] = useState(null);
+  // useEffect(() => {
+  //   console.log("Updated persons list:", persons);
+  // }, [persons]);
 
   useEffect(() => {
-    console.log("Updated persons list:", persons);
-  }, [persons]);
-
+    personsService
+      .getAll()
+      .then(initialPersons => setPersons(initialPersons))
+      .catch(err => {
+        setError("Failed to fetch data from server");
+        setTimeout(() => setError(null), 3000);
+      });
+  }, []);
   const personsToShow = showAll
     ? persons
     : persons.filter(person => person.name.toLowerCase().includes(searchName.toLowerCase())) //equal to what here
 
-  const showNotification = (name) => {
-    setMessage(`Added ${name}`);
-    setTimeout(() => setMessage(null), 3000); // Clear the message after 3 seconds
+  const showNotification = (message, isError = false) => {
+    if (isError) {
+      setError(message);
+    } else {
+      setMessage(message);
+    }
+    setTimeout(() => {
+      setMessage(null);
+      setError(null);
+    }, 3000);
   };
   return (
     <div>
@@ -35,7 +52,11 @@ const App = () => {
       <FilterName searchName={searchName} setSearchName={setPersons} />
       <AddName persons={persons} setPersons={setPersons} onPersonAdded={showNotification} />
       <h2>Numbers</h2>
-      <PersonsList persons={personsToShow} />
+      <PersonsList persons={personsToShow}
+        setPersons={setPersons}
+        onDelete={(name) => showNotification(`Deleted ${name}`)}
+        onError={(errMsg) => showNotification(errMsg, true)}
+      />
     </div>
   );
 };
