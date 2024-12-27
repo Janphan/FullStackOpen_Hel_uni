@@ -83,6 +83,13 @@ app.post('/api/persons', (request, response) => {
         id: generateId(),
     }
 
+    const duplicateName = persons.find(person => person.name === body.name);
+    const duplicateNumber = persons.find(person => person.number === body.number);
+
+    if (duplicateName || duplicateNumber) {
+        return response.status(400).json({ error: 'Name or number must be unique' });
+    }
+
     persons = persons.concat(person)
 
     response.json(person)
