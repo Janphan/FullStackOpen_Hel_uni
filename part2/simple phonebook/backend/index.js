@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const app = express()
 app.use(express.json())
 
@@ -27,10 +28,6 @@ let persons = [
         id: "4"
     }
 ]
-
-app.get('/', (request, response) => {
-    response.send('<h1>Hello World!</h1>')
-})
 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
@@ -97,6 +94,13 @@ app.post('/api/persons', (request, response) => {
 
     response.json(person)
 })
+
+const distPath = path.join(__dirname, 'dist')
+app.use(express.static(distPath))
+app.get('*', (request, response) => {
+    response.sendFile(path.join(distPath, 'index.html'))
+})
+
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
