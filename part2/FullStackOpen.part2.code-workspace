@@ -1,0 +1,17 @@
+{
+    "folders": [
+        {
+            "path": "."
+        },
+        {
+            "path": "anecdotes_app"
+        },
+        {
+            "path": "simple phonebook"
+        },
+        {
+            "path": "simple phonebook/backend"
+        }
+    ],
+    "settings": {}
+}

@@ -1,8 +1,31 @@
-# React + Vite
+# Full Stack Open Part 2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Phonebook Online Application
 
-Currently, two official plugins are available:
+- Backend (and production frontend served by backend): https://part2-black-snowflake-7309.fly.dev/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Project Structure
+
+- Frontend source: `simple phonebook/`
+- Backend source: `simple phonebook/backend/`
+
+## Deployment Commands (Fly.io)
+
+Run in `simple phonebook/backend`:
+
+```bash
+npm run build:ui
+npm run deploy
+```
+
+Or one command:
+
+```bash
+npm run deploy:full
+```
+
+Logs:
+
+```bash
+npm run logs:prod
+```
