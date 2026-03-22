@@ -24,7 +24,13 @@ const App = () => {
   useEffect(() => {
     personsService
       .getAll()
-      .then(initialPersons => setPersons(initialPersons))
+      .then(initialPersons => {
+        if (Array.isArray(initialPersons)) {
+          setPersons(initialPersons);
+          return;
+        }
+        throw new Error("API did not return an array of persons");
+      })
       .catch(err => {
         setError("Failed to fetch data from server");
         setTimeout(() => setError(null), 3000);
@@ -49,7 +55,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <NotificationMessage message={message} />
-      <FilterName searchName={searchName} setSearchName={setPersons} />
+      <FilterName searchName={searchName} setSearchName={setSearchName} setShowAll={setShowAll} />
       <AddName persons={persons} setPersons={setPersons} onPersonAdded={showNotification} />
       <h2>Numbers</h2>
       <PersonsList persons={personsToShow}
