@@ -1,7 +1,4 @@
 const mongoose = require('mongoose')
-const dns = require('dns')
-// Force Node to use public resolvers when local router DNS fails SRV lookups.
-dns.setServers(['8.8.8.8', '1.1.1.1'])
 
 if (process.argv.length < 3) {
     console.log('give password as argument')
