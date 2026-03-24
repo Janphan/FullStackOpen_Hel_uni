@@ -7,12 +7,7 @@ import NotificationMessage from "./components/NotificationMessage";
 import personsService from './services/persons';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]);
+  const [persons, setPersons] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [showAll, setShowAll] = useState(true);
   const [message, setMessage] = useState(null)
@@ -20,7 +15,24 @@ const App = () => {
   // useEffect(() => {
   //   console.log("Updated persons list:", persons);
   // }, [persons]);
+  const handleDelete = (id) => {
+    const personToDelete = persons.find(p => p.id === id);
+    if (!personToDelete) {
+      alert("Person not found");
+      return;
+    }
 
+    if (window.confirm(`Are you sure you want to delete ${personToDelete.name}?`)) {
+      personsService.remove(id)
+        .then(() => {
+          setPersons(prevPersons => prevPersons.filter(p => p.id !== id));
+          alert(`Deleted ${personToDelete.name}`);
+        })
+        .catch(err => {
+          alert(`Failed to delete ${personToDelete.name}`);
+        });
+    }
+  };
   useEffect(() => {
     personsService
       .getAll()
@@ -58,11 +70,7 @@ const App = () => {
       <FilterName searchName={searchName} setSearchName={setSearchName} setShowAll={setShowAll} />
       <AddName persons={persons} setPersons={setPersons} onPersonAdded={showNotification} />
       <h2>Numbers</h2>
-      <PersonsList persons={personsToShow}
-        setPersons={setPersons}
-        onDelete={(name) => showNotification(`Deleted ${name}`)}
-        onError={(errMsg) => showNotification(errMsg, true)}
-      />
+      <PersonsList persons={personsToShow} setPersons={setPersons} onDelete={handleDelete} />
     </div>
   );
 };

@@ -1,15 +1,14 @@
 import Person from "./Person";
 
-const PersonsList = ({ persons }) => {
-    const list = Array.isArray(persons) ? persons : [];
-
+const PersonsList = ({ persons, onDelete }) => {
     return (
         <>
-            <ul>
-                {list.map((person) => (
-                    <Person key={person.id} person={person} />
+            <ul className="persons-list">
+                {persons.map((person) => (
+                    <Person key={person.id} person={person} onDelete={onDelete} />
                 ))}
             </ul>
+
         </>
     )
 }

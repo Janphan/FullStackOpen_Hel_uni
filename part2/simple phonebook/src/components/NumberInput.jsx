@@ -1,7 +1,10 @@
-const NumberInput = ({newNumber, handleNumberChange}) => {
+const NumberInput = ({ newNumber, handleNumberChange }) => {
     return (
         <>
-        <div>Number: <input value={newNumber} onChange={handleNumberChange} /></div>
+            <label className="field-row" htmlFor="newNumber">
+                <span className="field-label">Number</span>
+                <input id="newNumber" className="text-input" value={newNumber} onChange={handleNumberChange} />
+            </label>
         </>
     )
 }
