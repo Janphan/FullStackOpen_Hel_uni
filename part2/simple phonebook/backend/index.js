@@ -11,6 +11,13 @@ app.use(express.static('dist'))
 app.use(express.json())
 
 //Route handlers
+//info route
+app.get('/info', (request, response) => {
+    const date = new Date()
+    Person.countDocuments({}).then(count => {
+        response.send(`<p>Phonebook has info for ${count} people</p><p>${date}</p>`)
+    })
+})
 //get all persons
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
