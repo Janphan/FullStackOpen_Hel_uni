@@ -10,6 +10,13 @@ const cors = require('cors');
 app.use(cors());
 
 
+const errorHandler = (error, req, res, next) => {
+    if (error.name === 'CastError') {
+        return res.status(400).json({ error: 'malformatted id' })
+    }
+    next(error)
+}
+
 //Handle connection and operations
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
@@ -41,6 +48,15 @@ app.get('/api/persons/:id', (request, response) => {
     })
 })
 
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error));
+})
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
