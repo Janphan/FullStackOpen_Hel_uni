@@ -1,29 +1,23 @@
 const express = require('express')
-const path = require('path')
 const app = express()
-app.use(express.json())
-
+const cors = require('cors');
 require('dotenv').config()
+
 const Person = require('./models/persons')
 
-const cors = require('cors');
+//Middleware pre-processes requests before they reach the route handlers
 app.use(cors());
+app.use(express.static('dist'))
+app.use(express.json())
 
-
-const errorHandler = (error, req, res, next) => {
-    if (error.name === 'CastError') {
-        return res.status(400).json({ error: 'malformatted id' })
-    }
-    next(error)
-}
-
-//Handle connection and operations
+//Route handlers
+//get all persons
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(persons => {
         response.json(persons)
     })
 })
-
+//add new person
 app.post('/api/persons', (request, response) => {
     const body = request.body
 
@@ -40,8 +34,10 @@ app.post('/api/persons', (request, response) => {
     person.save().then(savedPerson => {
         response.json(savedPerson)
     })
+        .catch(error => next(error))
 })
 
+//get person by id
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(person => {
@@ -56,7 +52,7 @@ app.get('/api/persons/:id', (request, response, next) => {
             next(error)
         })
 })
-
+//delete person by id
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndDelete(request.params.id)
         .then(result => {
@@ -64,7 +60,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
         })
         .catch(error => next(error));
 })
-
+//update person by id
 app.put('/api/persons/:id', (request, response, next) => {
     const { name, number } = request.body
     Person.findById(request.params.id)
@@ -81,6 +77,15 @@ app.put('/api/persons/:id', (request, response, next) => {
 }
 )
 
+//Error handling middleware
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+    if (error.name === 'CastError') {
+        console.error('malformatted id:', error.value)
+        return res.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)
+}
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
