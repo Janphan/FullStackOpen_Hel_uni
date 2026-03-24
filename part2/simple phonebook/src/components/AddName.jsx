@@ -18,15 +18,34 @@ export default function AddName({ persons, setPersons, onPersonAdded }) {
             return;
         }
 
-        const duplicateNumber = persons.find(
-            (person) => person.number.trim() === trimmedNumber
+        // Check for duplicate name
+        const duplicateName = persons.find(
+            (person) => person.name.trim().toLowerCase() === trimmedName.toLowerCase()
         );
-
-        if (duplicateNumber) {
-            alert(`${trimmedNumber} is already added to phonebook`);
+        if (duplicateName) {
+            const confirmUpdate = window.confirm(
+                `${trimmedName} is already added to phonebook. Do you want to update the number?`
+            );
+            if (confirmUpdate) {
+                try {
+                    const updatedPerson = await personsService.update(duplicateName.id, { name: duplicateName.name, number: trimmedNumber });
+                    setPersons((prevPersons) =>
+                        prevPersons.map((person) =>
+                            person.id === duplicateName.id ? updatedPerson : person
+                        )
+                    );
+                    onPersonAdded(`Updated ${trimmedName}'s number`);
+                    setNewName("");
+                    setNewNumber("");
+                } catch (error) {
+                    console.log("Error updating person:", error.message);
+                }
+            }
             return;
         }
 
+
+        //If no duplicate, add new person
         const personObject = {
             name: trimmedName,
             number: trimmedNumber,
@@ -39,7 +58,12 @@ export default function AddName({ persons, setPersons, onPersonAdded }) {
             setNewName("");
             setNewNumber("");
         } catch (error) {
-            alert("Failed to save person to server");
+            if (error.response && error.response.status === 404) {
+                alert(`Information of ${trimmedName} has already been removed from server`);
+                setPersons(persons.filter(p => p.name !== trimmedName));
+            } else {
+                console.log("Error adding person:", error.message);
+            }
         }
     };
 
