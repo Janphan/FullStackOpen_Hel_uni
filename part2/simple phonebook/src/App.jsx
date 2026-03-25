@@ -67,6 +67,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <NotificationMessage message={message} />
+      <NotificationMessage message={error} type="error" />
       <FilterName searchName={searchName} setSearchName={setSearchName} setShowAll={setShowAll} />
       <AddName persons={persons} setPersons={setPersons} onPersonAdded={showNotification} />
       <h2>Numbers</h2>

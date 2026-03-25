@@ -38,7 +38,8 @@ export default function AddName({ persons, setPersons, onPersonAdded }) {
                     setNewName("");
                     setNewNumber("");
                 } catch (error) {
-                    console.log("Error updating person:", error.message);
+                    const errMsg = error.response?.data?.error || error.message;
+                    onPersonAdded(errMsg, true);
                 }
             }
             return;
@@ -58,11 +59,13 @@ export default function AddName({ persons, setPersons, onPersonAdded }) {
             setNewName("");
             setNewNumber("");
         } catch (error) {
+            const errMsg = error.response?.data?.error || error.message;
+            // If resource was removed meanwhile
             if (error.response && error.response.status === 404) {
-                alert(`Information of ${trimmedName} has already been removed from server`);
+                onPersonAdded(`Information of ${trimmedName} has already been removed from server`, true);
                 setPersons(persons.filter(p => p.name !== trimmedName));
             } else {
-                console.log("Error adding person:", error.message);
+                onPersonAdded(errMsg, true);
             }
         }
     };
