@@ -1,8 +1,13 @@
 FROM node:20-alpine
 WORKDIR /app
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+# Copy package manifest(s). using package*.json makes the build succeed
+# even when package-lock.json is not present.
+COPY package*.json ./
+
+# Use npm install when lockfile may be absent; it installs deps and
+# creates a lockfile when needed. --omit=dev keeps image smaller.
+RUN npm install --omit=dev
 COPY . .
 
 ENV PORT=8080
