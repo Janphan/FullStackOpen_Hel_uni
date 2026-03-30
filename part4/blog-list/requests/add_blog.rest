@@ -1,0 +1,20 @@
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "This is a blog example",
+  "author": "John Doe",
+  "url": "https://example.com/blog-example",
+  "likes": 7
+}
+
+###
+
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Second blog sample",
+  "author": "Jane Doe",
+  "url": "https://example.com/second-blog"
+}
