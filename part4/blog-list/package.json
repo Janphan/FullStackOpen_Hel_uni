@@ -7,8 +7,9 @@
     "start": "node index.js",
     "dev": "node --watch index.js",
     "dev:nodemon": "nodemon index.js",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "test:watch": "cross-env NODE_ENV=test jest --watch"
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test": "node --test",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
