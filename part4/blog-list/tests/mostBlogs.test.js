@@ -1,12 +1,11 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
-const { listWithOneBlog, listWithMultipleBlogs } = require('./blogs_fixtures')
+const { listWithOneBlog, listWithMultipleBlogs, emptyBlogs } = require('./blogs_fixtures')
 
 describe('most blogs', () => {
     test('of empty list is null', () => {
-        const blogs = []
-        const result = listHelper.mostBlogs(blogs)
+        const result = listHelper.mostBlogs(emptyBlogs)
         assert.strictEqual(result, null)
     })
     test('when list has only one blog, returns that author with 1 blog', () => {

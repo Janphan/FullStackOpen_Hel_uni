@@ -61,7 +61,7 @@ const listWithMultipleBlogs = [
     },
     {
         _id: "5a422b3a1b54a676234d17f9",
-        title: "New blog with same likes as Canonical string reduction",
+        title: "Practical Object-Oriented Design in Ruby",
         author: "Edsger W. Dijkstra",
         url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
         likes: 2,
