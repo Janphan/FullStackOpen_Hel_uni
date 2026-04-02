@@ -1,9 +1,13 @@
 const bloglistRouter = require('express').Router() // 
 const Blog = require('../models/blog') // 
 
-bloglistRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({})
-    response.json(blogs)
+bloglistRouter.get('/', async (request, response, next) => {
+    try {
+        const blogs = await Blog.find({})
+        response.json(blogs)
+    } catch (error) {
+        next(error)
+    }
 })
 
 bloglistRouter.post('/', async (request, response, next) => {
@@ -20,7 +24,7 @@ bloglistRouter.post('/', async (request, response, next) => {
         const savedBlog = await blog.save()
         response.status(201).json(savedBlog)
     } catch (error) {
-        next(error) // Chuyển lỗi sang middleware xử lý lỗi 
+        next(error)
     }
 })
 
