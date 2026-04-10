@@ -7,7 +7,6 @@ const Blog = require('../models/blog')
 const { listWithOneBlog, listWithMultipleBlogs } = require('./blogs_fixtures')
 
 const api = supertest(app)
-
 beforeEach(async () => {
     await Blog.deleteMany({})
     for (let blog of listWithMultipleBlogs) {
@@ -16,16 +15,15 @@ beforeEach(async () => {
     }
 })
 
-test('blogs are returned as json', async () => {
-    await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-})
-
-test('all blogs are returned', async () => {
+test('unique identifier property of the blog posts is named id', async () => {
     const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length, listWithMultipleBlogs.length)
+    const blogs = response.body
+    assert.strictEqual(blogs.length > 0, true, "Database should contain at least one blog")
+    const blogToTest = blogs[0]
+
+    assert.ok(blogToTest.id, "Blog post should have an 'id' property")
+    assert.strictEqual(blogToTest._id, undefined, "Blog post should not have an '_id' property")
+    assert.strictEqual(blogToTest.__v, undefined, "Blog post should not have a '__v' property")
 })
 
 after(() => {
