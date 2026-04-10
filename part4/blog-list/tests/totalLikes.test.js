@@ -17,8 +17,3 @@ describe('total likes', () => {
         assert.strictEqual(result, 43)
     })
 })
-test('when list has multiple blogs, equals the likes of that', () => {
-
-    const result = listHelper.totalLikes(listWithMultipleBlogs)
-    assert.strictEqual(result, 43)
-})
