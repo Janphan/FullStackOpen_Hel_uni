@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:3001
+@blogId = REPLACE_WITH_BLOG_ID
+
+DELETE {{baseUrl}}/api/blogs/{{blogId}}
