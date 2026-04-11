@@ -4,7 +4,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const assert = require('node:assert')
 const Blog = require('../models/blog')
-const { listWithOneBlog, listWithMultipleBlogs } = require('./blogs_fixtures')
+const { listWithMultipleBlogs } = require('./blogs_fixtures')
 
 const api = supertest(app)
 beforeEach(async () => {
@@ -34,6 +34,19 @@ describe('Adding a new blog post', () => {
         assert.strictEqual(response.body.likes, newBlog.likes, "Likes should match the one sent in the request")
         const blogsAtEnd = await Blog.find({})
         assert.strictEqual(blogsAtEnd.length, listWithMultipleBlogs.length + 1, "Blog count should have increased by one")
+    })
+
+    test('fails with status code 400 if title and url are missing', async () => {
+        const newBlog = {
+            author: "John Doe",
+            likes: 7
+        }
+        await api.post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+
+        const blogsAtEnd = await Blog.find({})
+        assert.strictEqual(blogsAtEnd.length, listWithMultipleBlogs.length, "Blog count should not have increased")
     })
 })
 
