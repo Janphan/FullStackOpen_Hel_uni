@@ -1,9 +1,11 @@
 const bloglistRouter = require('express').Router() // 
-const Blog = require('../models/blog') // 
+const Blog = require('../models/blog')
+const User = require('../models/user')
 
 bloglistRouter.get('/', async (request, response, next) => {
     try {
         const blogs = await Blog.find({})
+            .find({}).populate('user', { username: 1, name: 1 })
         response.json(blogs)
     } catch (error) {
         next(error)
@@ -13,15 +15,24 @@ bloglistRouter.get('/', async (request, response, next) => {
 bloglistRouter.post('/', async (request, response, next) => {
     const body = request.body
 
+    const user = await User.findById(body.userId)
+
+    if (!user) {
+        return response.status(400).json({ error: 'Invalid user ID' })
+    }
+
+
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes
+        likes: body.likes,
+        user: user._id
     })
 
     try {
         const savedBlog = await blog.save()
+        user.blogs = user.blogs.concat(savedBlog._id)
         response.status(201).json(savedBlog)
     } catch (error) {
         next(error)
