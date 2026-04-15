@@ -21,7 +21,6 @@ bloglistRouter.post('/', async (request, response, next) => {
         return response.status(400).json({ error: 'Invalid user ID' })
     }
 
-
     const blog = new Blog({
         title: body.title,
         author: body.author,
