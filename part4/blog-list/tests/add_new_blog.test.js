@@ -5,10 +5,25 @@ const app = require('../app')
 const assert = require('node:assert')
 const Blog = require('../models/blog')
 const { listWithMultipleBlogs } = require('./blogs_fixtures')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
 
+let token = null
 const api = supertest(app)
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash('password', 10)
+    const user = new User({ username: 'root', passwordHash })
+    await user.save()
+
+    // Log in to get the token
+    const response = await api
+        .post('/api/login')
+        .send({ username: 'root', password: 'password' })
+    token = response.body.token
+
     for (let blog of listWithMultipleBlogs) {
         let blogObject = new Blog(blog)
         await blogObject.save()
@@ -18,17 +33,15 @@ describe('Adding a new blog post', () => {
 
     test('add a new blog post', async () => {
         const newBlog = {
-            title: "New Blog Post",
+            title: "New Blog Post with token",
             author: "John Doe",
             url: "http://example.com/new-blog-post",
             likes: 7
         }
-        const decodedToken = jwt.verify(request.token, process.env.SECRET)
-        if (!decodedToken.id) {
-            return response.status(401).json({ error: 'Token missing or invalid' })
-        }
+
         const response = await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -46,6 +59,7 @@ describe('Adding a new blog post', () => {
             likes: 7
         }
         await api.post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(400)
 
