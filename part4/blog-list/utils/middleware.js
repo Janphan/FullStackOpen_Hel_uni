@@ -1,14 +1,25 @@
 const logger = require('./logger')
 
-const jwt = require('jsonwebtoken')
-
-const getTokenFrom = (request, response, next) => {
+const tokenExtractor = (request, response, next) => {
     const authorization = request.get('authorization')
     if (authorization && authorization.startsWith('Bearer ')) {
         request.token = authorization.replace('Bearer ', '')
-        return next()
+    } else {
+        request.token = null
     }
+
+    next()
 }
+
+const userExtractor = (request, response, next) => {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    if (!decodedToken.id) {
+        return response.status(401).json({ error: 'Token missing or invalid' })
+    }
+    request.user = decodedToken.id
+    next()
+}
+
 const requestLogger = (request, response, next) => {
     logger.info('Method:', request.method)
     logger.info('Path:  ', request.path)
@@ -34,12 +45,19 @@ const errorHandler = (error, request, response, next) => {
         return response.status(401).json({ error: 'invalid token' })
     } else if (error.name === 'TokenExpiredError') {
         return response.status(401).json({ error: 'token expired' })
+    } else if (error.name === "InvalidUserIdError") {
+        return response.status(400).json({ error: 'Invalid user ID' })
+    } else if (error.name === "UnauthorizedError") {
+        return response.status(403).json({ error: 'Only the creator can delete this blog' })
     }
+
     next(error)
 }
 
 module.exports = {
     requestLogger,
+    tokenExtractor,
     unknownEndpoint,
+    userExtractor,
     errorHandler
 }

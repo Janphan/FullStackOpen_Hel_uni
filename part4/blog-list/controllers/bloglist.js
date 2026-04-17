@@ -1,7 +1,8 @@
 const bloglistRouter = require('express').Router() // 
 const Blog = require('../models/blog')
 const User = require('../models/user')
-
+const jwt = require('jsonwebtoken')
+const { userExtractor } = require('../utils/middleware')
 
 bloglistRouter.get('/', async (request, response, next) => {
     try {
@@ -12,13 +13,10 @@ bloglistRouter.get('/', async (request, response, next) => {
     }
 })
 
-bloglistRouter.post('/', async (request, response, next) => {
+bloglistRouter.post('/', userExtractor, async (request, response, next) => {
     const body = request.body
-    const decodedToken = jwt.verify(request.token, process.env.SECRET)
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'Token missing or invalid' })
-    }
-    const user = await User.findById(decodedToken.id)
+
+    const user = await User.findById(request.user)
 
     if (!user) {
         return response.status(400).json({ error: 'Invalid user ID' })
@@ -42,21 +40,37 @@ bloglistRouter.post('/', async (request, response, next) => {
     }
 })
 
-bloglistRouter.delete('/:id', async (request, response, next) => {
+bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => {
     try {
-        const deletedBlog = await Blog.findByIdAndDelete(request.params.id)
 
-        if (!deletedBlog) {
-            return response.status(404).end()
+        const user = request.user
+        // Find the blog by ID
+        const blog = await Blog.findById(request.params.id)
+        if (!blog) {
+            return response.status(404).json({ error: 'Blog not found' })
+        }
+        // Check if the blog has an associated user
+        if (!blog.user) {
+            return response.status(404).json({ error: 'Blog has no associated user' })
         }
 
+        // Check if the user ID from the token matches the user ID associated with the blog
+        if (blog.user.toString() === request.user.id) {
+            // User is authorized to delete the blog
+        } else {
+            // User is not authorized to delete the blog
+            return response.status(403).json({ error: 'Only the creator can delete this blog' })
+        }
+
+        // If the user is authorized, proceed to delete the blog
+        await Blog.findByIdAndDelete(request.params.id)
         response.status(204).end()
     } catch (error) {
         next(error)
     }
 })
 
-bloglistRouter.put('/:id', async (request, response, next) => {
+bloglistRouter.put('/:id', userExtractor, async (request, response, next) => {
     const { title, author, url, likes } = request.body
     const updatedBlogData = { title, author, url, likes }
 
@@ -68,9 +82,8 @@ bloglistRouter.put('/:id', async (request, response, next) => {
         )
 
         if (!updatedBlog) {
-            return response.status(404).end()
+            return response.status(404).json({ error: 'Blog not found' })
         }
-
         response.status(200).json(updatedBlog)
     } catch (error) {
         next(error)
