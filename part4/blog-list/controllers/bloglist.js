@@ -1,7 +1,6 @@
 const bloglistRouter = require('express').Router() // 
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
 const { userExtractor } = require('../utils/middleware')
 
 bloglistRouter.get('/', async (request, response, next) => {
@@ -16,21 +15,25 @@ bloglistRouter.get('/', async (request, response, next) => {
 bloglistRouter.post('/', userExtractor, async (request, response, next) => {
     const body = request.body
 
-    const user = await User.findById(request.user)
-
-    if (!user) {
-        return response.status(400).json({ error: 'Invalid user ID' })
+    if (!request.user) {
+        return response.status(401).json({ error: 'Token missing or invalid' })
     }
 
-    const blog = new Blog({
-        title: body.title,
-        author: body.author,
-        url: body.url,
-        likes: body.likes,
-        user: user._id
-    })
-
     try {
+        const user = await User.findById(request.user)
+
+        if (!user) {
+            return response.status(400).json({ error: 'Invalid user ID' })
+        }
+
+        const blog = new Blog({
+            title: body.title,
+            author: body.author,
+            url: body.url,
+            likes: body.likes,
+            user: user._id
+        })
+
         const savedBlog = await blog.save()
         user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
@@ -42,8 +45,10 @@ bloglistRouter.post('/', userExtractor, async (request, response, next) => {
 
 bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => {
     try {
+        if (!request.user) {
+            return response.status(401).json({ error: 'Token missing or invalid' })
+        }
 
-        const user = request.user
         // Find the blog by ID
         const blog = await Blog.findById(request.params.id)
         if (!blog) {
@@ -55,7 +60,7 @@ bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => 
         }
 
         // Check if the user ID from the token matches the user ID associated with the blog
-        if (blog.user.toString() === request.user.id) {
+        if (blog.user.toString() === request.user) {
             // User is authorized to delete the blog
         } else {
             // User is not authorized to delete the blog
@@ -71,6 +76,10 @@ bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => 
 })
 
 bloglistRouter.put('/:id', userExtractor, async (request, response, next) => {
+    if (!request.user) {
+        return response.status(401).json({ error: 'Token missing or invalid' })
+    }
+
     const { title, author, url, likes } = request.body
     const updatedBlogData = { title, author, url, likes }
 
