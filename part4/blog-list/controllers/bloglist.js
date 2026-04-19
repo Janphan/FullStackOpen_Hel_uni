@@ -13,90 +13,54 @@ bloglistRouter.get('/', async (request, response, next) => {
 })
 
 bloglistRouter.post('/', userExtractor, async (request, response, next) => {
-    const body = request.body
+    const blog = new Blog(request.body)
+    const user = request.user
 
-    if (!request.user) {
-        return response.status(401).json({ error: 'Token missing or invalid' })
+    blog.likes = blog.likes || 0
+    blog.user = user._id
+
+    if (!blog.title || !blog.url) {
+        return response.status(400).json({ error: 'Title and URL are required' })
     }
-
-    try {
-        const user = await User.findById(request.user)
-
-        if (!user) {
-            return response.status(400).json({ error: 'Invalid user ID' })
-        }
-
-        const blog = new Blog({
-            title: body.title,
-            author: body.author,
-            url: body.url,
-            likes: body.likes,
-            user: user._id
-        })
-
-        const savedBlog = await blog.save()
-        user.blogs = user.blogs.concat(savedBlog._id)
-        await user.save()
-        response.status(201).json(savedBlog)
-    } catch (error) {
-        next(error)
-    }
+    user.blogs = user.blogs.concat(blog._id)
+    await user.save()
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
 })
 
 bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => {
-    try {
-        if (!request.user) {
-            return response.status(401).json({ error: 'Token missing or invalid' })
-        }
+    const user = request.user
+    const blog = await Blog.findById(request.params.id)
 
-        // Find the blog by ID
-        const blog = await Blog.findById(request.params.id)
-        if (!blog) {
-            return response.status(404).json({ error: 'Blog not found' })
-        }
-        // Check if the blog has an associated user
-        if (!blog.user) {
-            return response.status(404).json({ error: 'Blog has no associated user' })
-        }
-
-        // Check if the user ID from the token matches the user ID associated with the blog
-        if (blog.user.toString() === request.user) {
-            // User is authorized to delete the blog
-        } else {
-            // User is not authorized to delete the blog
-            return response.status(403).json({ error: 'Only the creator can delete this blog' })
-        }
-
-        // If the user is authorized, proceed to delete the blog
-        await Blog.findByIdAndDelete(request.params.id)
-        response.status(204).end()
-    } catch (error) {
-        next(error)
+    if (!blog) {
+        return response.status(204).json({ error: 'Blog not found' })
     }
+    if (user.id.toString() !== blog.user.toString()) {
+        return response.status(403).json({ error: 'Forbidden: You can only delete your own blogs' })
+    }
+
+    user.blogs = user.blogs.filter(blogId => blogId.toString() !== blog.id.toString())
+    await user.save()
+    await blog.deleteOne()
+    response.status(204).end()
 })
 
 bloglistRouter.put('/:id', userExtractor, async (request, response, next) => {
-    if (!request.user) {
-        return response.status(401).json({ error: 'Token missing or invalid' })
-    }
-
     const { title, author, url, likes } = request.body
-    const updatedBlogData = { title, author, url, likes }
+    const blog = await Blog.findById(request.params.id)
 
-    try {
-        const updatedBlog = await Blog.findByIdAndUpdate(
-            request.params.id,
-            updatedBlogData,
-            { new: true, runValidators: true, context: 'query' }
-        )
-
-        if (!updatedBlog) {
-            return response.status(404).json({ error: 'Blog not found' })
-        }
-        response.status(200).json(updatedBlog)
-    } catch (error) {
-        next(error)
+    if (!blog) {
+        return response.status(404).json({ error: 'Blog not found' })
     }
+
+    blog.title = title
+    blog.author = author
+    blog.url = url
+    blog.likes = likes
+
+    const updatedBlog = await blog.save()
+    response.json(updatedBlog)
+
 })
 
 module.exports = bloglistRouter //
