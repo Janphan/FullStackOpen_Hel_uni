@@ -3,6 +3,7 @@ import './App.css'
 // Blog component not needed for table layout
 import blogService from './services/blogs'
 import loginService from './services/login'
+import CreateNewBlogForm from './forms/createNewBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -52,6 +53,18 @@ const App = () => {
     setUser(null)
   }
 
+  const handleCreateBlog = async (blogObject) => {
+    try {
+      const createdBlog = await blogService.create(blogObject)
+      setBlogs(blogs.concat(createdBlog))
+    } catch {
+      setErrorMessage('Error creating blog')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
@@ -93,6 +106,7 @@ const App = () => {
       <h2>Login</h2>
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
+      <CreateNewBlogForm createBlog={handleCreateBlog} />
       <table>
         <thead>
           <tr>
