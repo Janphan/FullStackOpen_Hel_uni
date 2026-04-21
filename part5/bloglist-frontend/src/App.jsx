@@ -10,7 +10,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [setErrorMessage] = useState(null)
 
   console.log('user logged in', user)
 
@@ -20,10 +20,22 @@ const App = () => {
     )
   }, [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+
       setUser(user)
       setUsername('')
       setPassword('')
@@ -33,6 +45,11 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
 
@@ -75,6 +92,7 @@ const App = () => {
     <div>
       <h2>Login</h2>
       <p>{user.name} logged in</p>
+      <button onClick={handleLogout}>logout</button>
       <table>
         <thead>
           <tr>
