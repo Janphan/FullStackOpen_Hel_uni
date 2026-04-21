@@ -1,0 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 900px;
+  margin-top: 16px;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+tr:hover {
+  background: #fafafa;
+}
+
+button {
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f0f0f0;
+}

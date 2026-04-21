@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:3001
+@blogId = REPLACE_WITH_BLOG_ID
+
+PUT {{baseUrl}}/api/blogs/{{blogId}}
+Content-Type: application/json
+
+{
+	"title": "Updated blog title",
+	"author": "Updated author",
+	"url": "https://example.com/updated-blog",
+	"likes": 99
+}
