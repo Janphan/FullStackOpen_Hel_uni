@@ -15,6 +15,11 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
   const [loginVisible, setLoginVisible] = useState(false)
+  const [createBlogVisible, setCreateBlogVisible] = useState(false)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  const [likes, setLikes] = useState(0)
 
 
   useEffect(() => {
@@ -58,13 +63,18 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateBlog = async (blogObject) => {
+  const handleCreateBlog = async (event) => {
+    event.preventDefault()
     try {
-      const createdBlog = await blogService.create(blogObject)
+      const createdBlog = await blogService.create({ title, author, url, likes })
       const successMessage = `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
       setBlogs(blogs.concat(createdBlog))
       setErrorMessage(successMessage)
       setIsError(false)
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+      setLikes(0)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -102,6 +112,32 @@ const App = () => {
     )
   }
 
+  const createBlogForm = (props) => {
+    const hideWhenVisible = { display: props.visible ? 'none' : '' }
+    const showWhenVisible = { display: props.visible ? '' : 'none' }
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setCreateBlogVisible(true)}>create new blog</button>
+        </div>
+        <div style={showWhenVisible}>
+          <CreateNewBlogForm
+            title={title}
+            author={author}
+            url={url}
+            likes={likes}
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value)}
+            handleLikesChange={({ target }) => setLikes(target.value)}
+            handleSubmit={handleCreateBlog}
+          />
+          <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+
   // if (user === null) {
   //   return (
   //     <div>
@@ -120,7 +156,7 @@ const App = () => {
         (<div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
-          <CreateNewBlogForm createBlog={handleCreateBlog} />
+          {createBlogForm({ visible: createBlogVisible })}
           <table>
             <thead>
               <tr>

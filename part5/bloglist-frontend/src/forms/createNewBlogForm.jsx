@@ -1,65 +1,54 @@
-import { useState } from 'react'
-
-const CreateNewBlogForm = ({ createBlog }) => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
-    const [likes, setLikes] = useState(0)
-    const createBlogForm = () => (
-        <form onSubmit={(e) => {
-            e.preventDefault()
-            createBlog({ title, author, url, likes })
-            setTitle('')
-            setAuthor('')
-            setUrl('')
-            setLikes(0)
-        }}>
-            <div>
-                <h2>Create new blog</h2>
-                <label>
-                    Title
+const CreateNewBlogForm = ({
+    handleSubmit,
+    handleAuthorChange,
+    handleTitleChange,
+    handleUrlChange,
+    handleLikesChange,
+    title,
+    author,
+    url,
+    likes }) => {
+    return (
+        <div>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    title
                     <input
                         type="text"
                         value={title}
-                        onChange={({ target }) => setTitle(target.value)}
+                        onChange={handleTitleChange}
                     />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Author
+                </div>
+                <div>
+                    author
                     <input
                         type="text"
                         value={author}
-                        onChange={({ target }) => setAuthor(target.value)}
+                        onChange={handleAuthorChange}
                     />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Url
+                </div>
+                <div>
+                    url
                     <input
-                        type="text"
+                        // type="url"
                         value={url}
-                        onChange={({ target }) => setUrl(target.value)}
+                        onChange={handleUrlChange}
                     />
-                </label>
-            </div>
-            <div>
-                <label>
-                    Likes
+                </div>
+                <div>
+                    likes
                     <input
                         type="number"
                         value={likes}
-                        onChange={({ target }) => setLikes(target.value)}
+                        onChange={handleLikesChange}
+                        min="0"
                     />
-                </label>
-            </div>
-            <button type="submit">create</button>
-        </form>
-    )
 
-    return createBlogForm()
+                </div>
+                <button type="submit">create</button>
+            </form>
+        </div>
+    )
 }
 
 export default CreateNewBlogForm
