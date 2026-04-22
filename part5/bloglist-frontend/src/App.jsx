@@ -4,6 +4,7 @@ import './App.css'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateNewBlogForm from './forms/createNewBlogForm'
+import LoginForm from './forms/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -13,6 +14,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
+  const [loginVisible, setLoginVisible] = useState(false)
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -76,70 +79,71 @@ const App = () => {
   }
 
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>
-          username
-          <input
-            type="text"
-            value={username}
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          password
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </label>
-      </div>
-      <button type="submit">login</button>
-    </form>
-  )
+  const loginForm = (props) => {
+    const hideWhenVisible = { display: props.visible ? 'none' : '' }
+    const showWhenVisible = { display: props.visible ? '' : 'none' }
 
-  if (user === null) {
     return (
       <div>
-        <h2>Log in to application</h2>
-        {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
-        {loginForm()}
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>login</button>
+        </div>
+        <div style={showWhenVisible}>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
       </div>
     )
   }
+
+  // if (user === null) {
+  //   return (
+  //     <div>
+  //       {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
+  //       {loginForm({ visible: loginVisible })}
+  //     </div>
+  //   )
+  // }
 
   return (
     <div>
       <h2>Login</h2>
       {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
-      <CreateNewBlogForm createBlog={handleCreateBlog} />
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Likes</th>
-            <th>Url</th>
-          </tr>
-        </thead>
-        <tbody>
-          {blogs.map(blog => (
-            <tr key={blog.id}>
-              <td>{blog.title}</td>
-              <td>{blog.author}</td>
-              <td>{blog.likes}</td>
-              <td>{blog.url}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+
+      {user === null ? loginForm({ visible: loginVisible }) :
+        (<div>
+          <p>{user.name} logged in</p>
+          <button onClick={handleLogout}>logout</button>
+          <CreateNewBlogForm createBlog={handleCreateBlog} />
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Likes</th>
+                <th>Url</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blogs.map(blog => (
+                <tr key={blog.id}>
+                  <td>{blog.title}</td>
+                  <td>{blog.author}</td>
+                  <td>{blog.likes}</td>
+                  <td>{blog.url}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>)
+      }
+    </div >
   )
 }
 
