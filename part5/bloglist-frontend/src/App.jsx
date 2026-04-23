@@ -63,6 +63,7 @@ const App = () => {
     setUser(null)
   }
 
+  //Create new blogs into its own component
   const handleCreateBlog = async (event) => {
     event.preventDefault()
     try {
