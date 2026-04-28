@@ -83,15 +83,17 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
-    try {
-      const updatedBlog = await blogService.update(blog.id, { ...blog, likes: (blog.likes || 0) + 1 })
-      setBlogs(prev => prev.map(b => b.id === updatedBlog.id ? updatedBlog : b))
-    } catch (exception) {
-      const message = exception?.response?.data?.error || 'Error liking blog'
-      setErrorMessage(message)
-      setIsError(true)
-      setTimeout(() => setErrorMessage(null), 5000)
+    console.log("Liking blog:", blog)
+    console.log("type of blog user", typeof blog.user)
+
+    const blogToUpdate = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user?.id || blog.user || null
     }
+
+    const updateBlog = await blogService.update(blog.id, blogToUpdate)
+    setBlogs(blogs.map(b => b.id === blog.id ? updateBlog : b))
   }
 
 
@@ -135,7 +137,7 @@ const App = () => {
             <Blog
               key={blog.id}
               blog={blog}
-              handleLike={handleLike}
+              handleLike={() => handleLike(blog)}
             />
           ))}
         </div>

@@ -3,6 +3,7 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 const { userExtractor } = require('../utils/middleware')
 
+//Get all blogs with user details
 bloglistRouter.get('/', async (request, response, next) => {
     try {
         const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
@@ -11,7 +12,7 @@ bloglistRouter.get('/', async (request, response, next) => {
         next(error)
     }
 })
-
+// Create a new blog
 bloglistRouter.post('/', userExtractor, async (request, response, next) => {
     const blog = new Blog(request.body)
     const user = request.user
@@ -27,7 +28,7 @@ bloglistRouter.post('/', userExtractor, async (request, response, next) => {
     const savedBlog = await blog.save()
     response.status(201).json(savedBlog)
 })
-
+// Delete a blog by ID (only if the authenticated user is the owner)
 bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => {
     const user = request.user
     const blog = await Blog.findById(request.params.id)
@@ -44,19 +45,14 @@ bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => 
     await blog.deleteOne()
     response.status(204).end()
 })
-
+// Update blog details (title, author, url, likes)
 bloglistRouter.put('/:id', userExtractor, async (request, response, next) => {
     const { title, author, url, likes } = request.body
-    const blog = await Blog.findById(request.params.id)
-
+    const blog = await Blog.findByIdAndUpdate(request.params.id, { title, author, url, likes }, { new: true })
+        .populate('user', { username: 1, name: 1 })
     if (!blog) {
         return response.status(404).json({ error: 'Blog not found' })
     }
-
-    blog.title = title
-    blog.author = author
-    blog.url = url
-    blog.likes = likes
 
     const updatedBlog = await blog.save()
     response.json(updatedBlog)
