@@ -6,6 +6,7 @@ import loginService from './services/login'
 import CreateNewBlogForm from './forms/createNewBlogForm'
 import LoginForm from './forms/LoginForm'
 import Togglable from './components/Togglable'
+import Blog from './components/Blog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -128,27 +129,18 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           {createBlogForm()}
-          <div>
-            {blogs.map(blog => (
-              <div key={blog.id} className="blog-line" style={{ padding: '8px 0', borderBottom: '1px solid #ddd' }}>
-                <div>
-                  <strong>{blog.title}</strong>
-                </div>
-                <div>
-                  <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a>
-                </div>
-                <div style={{ marginTop: '6px' }}>
-                  {blog.likes || 0} <button onClick={() => handleLike(blog)}>like</button>
-                </div>
-                <div>
-                  {blog.author}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>)
-      }
-    </div >
+
+
+          {blogs.map(blog => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+            />
+          ))}
+        </div>
+        )}
+    </div>
   )
 }
 
