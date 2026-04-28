@@ -5,6 +5,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateNewBlogForm from './forms/createNewBlogForm'
 import LoginForm from './forms/LoginForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,8 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
-  const [loginVisible, setLoginVisible] = useState(false)
-  const [createBlogVisible, setCreateBlogVisible] = useState(false)
+
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -102,74 +102,40 @@ const App = () => {
   }
 
 
-  const loginForm = (props) => {
-    const hideWhenVisible = { display: props.visible ? 'none' : '' }
-    const showWhenVisible = { display: props.visible ? '' : 'none' }
-
+  const loginForm = () => {
     return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>login</button>
-        </div>
-        <div style={showWhenVisible}>
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
+      <Togglable buttonLabel="login">
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        />
+      </Togglable>
     )
   }
 
-  const createBlogForm = (props) => {
-    const hideWhenVisible = { display: props.visible ? 'none' : '' }
-    const showWhenVisible = { display: props.visible ? '' : 'none' }
+  const createBlogForm = () => {
     return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setCreateBlogVisible(true)}>create new blog</button>
-        </div>
-        <div style={showWhenVisible}>
-          <CreateNewBlogForm
-            title={title}
-            author={author}
-            url={url}
-            likes={likes}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-            handleLikesChange={({ target }) => setLikes(target.value)}
-            handleSubmit={handleCreateBlog}
-          />
-          <button onClick={() => setCreateBlogVisible(false)}>cancel</button>
-        </div>
-      </div>
+      <Togglable buttonLabel="create new blog">
+        <CreateNewBlogForm
+          createBlog={handleCreateBlog}
+        />
+      </Togglable>
     )
   }
-
-  // if (user === null) {
-  //   return (
-  //     <div>
-  //       {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
-  //       {loginForm({ visible: loginVisible })}
-  //     </div>
-  //   )
-  // }
 
   return (
     <div>
       <h2>Login</h2>
       {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
 
-      {user === null ? loginForm({ visible: loginVisible }) :
+      {user === null ? loginForm() :
         (<div>
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
-          {createBlogForm({ visible: createBlogVisible })}
+          {createBlogForm()}
           <div>
             {blogs.map(blog => (
               <div key={blog.id} className="blog-line" style={{ padding: '8px 0', borderBottom: '1px solid #ddd' }}>
