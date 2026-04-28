@@ -121,6 +121,10 @@ const App = () => {
     )
   }
 
+  function compareLikes(a, b) {
+    return b.likes - a.likes
+  }
+
   return (
     <div>
       <h2>Login</h2>
@@ -133,7 +137,7 @@ const App = () => {
           {createBlogForm()}
 
 
-          {blogs.map(blog => (
+          {[...blogs].sort(compareLikes).map(blog => (
             <Blog
               key={blog.id}
               blog={blog}
