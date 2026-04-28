@@ -88,6 +88,18 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blog) => {
+    try {
+      const updatedBlog = await blogService.update(blog.id, { ...blog, likes: (blog.likes || 0) + 1 })
+      setBlogs(prev => prev.map(b => b.id === updatedBlog.id ? updatedBlog : b))
+    } catch (exception) {
+      const message = exception?.response?.data?.error || 'Error liking blog'
+      setErrorMessage(message)
+      setIsError(true)
+      setTimeout(() => setErrorMessage(null), 5000)
+    }
+  }
+
 
   const loginForm = (props) => {
     const hideWhenVisible = { display: props.visible ? 'none' : '' }
@@ -157,26 +169,24 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={handleLogout}>logout</button>
           {createBlogForm({ visible: createBlogVisible })}
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Likes</th>
-                <th>Url</th>
-              </tr>
-            </thead>
-            <tbody>
-              {blogs.map(blog => (
-                <tr key={blog.id}>
-                  <td>{blog.title}</td>
-                  <td>{blog.author}</td>
-                  <td>{blog.likes}</td>
-                  <td>{blog.url}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div>
+            {blogs.map(blog => (
+              <div key={blog.id} className="blog-line" style={{ padding: '8px 0', borderBottom: '1px solid #ddd' }}>
+                <div>
+                  <strong>{blog.title}</strong>
+                </div>
+                <div>
+                  <a href={blog.url} target="_blank" rel="noopener noreferrer">{blog.url}</a>
+                </div>
+                <div style={{ marginTop: '6px' }}>
+                  {blog.likes || 0} <button onClick={() => handleLike(blog)}>like</button>
+                </div>
+                <div>
+                  {blog.author}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>)
       }
     </div >
