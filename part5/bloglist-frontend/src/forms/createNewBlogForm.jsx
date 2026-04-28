@@ -1,22 +1,31 @@
+import { useState } from 'react'
 const CreateNewBlogForm = ({
-    handleSubmit,
-    handleAuthorChange,
-    handleTitleChange,
-    handleUrlChange,
-    handleLikesChange,
-    title,
-    author,
-    url,
-    likes }) => {
+    createBlog,
+
+}) => {
+
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+    const [likes, setLikes] = useState(0)
+
+    const addBlog = async (event) => {
+        event.preventDefault()
+        createBlog({ title, author, url, likes })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+        setLikes(0)
+    }
     return (
         <div>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={addBlog}>
                 <div>
                     title
                     <input
                         type="text"
                         value={title}
-                        onChange={handleTitleChange}
+                        onChange={({ target }) => setTitle(target.value)}
                     />
                 </div>
                 <div>
@@ -24,7 +33,7 @@ const CreateNewBlogForm = ({
                     <input
                         type="text"
                         value={author}
-                        onChange={handleAuthorChange}
+                        onChange={({ target }) => setAuthor(target.value)}
                     />
                 </div>
                 <div>
@@ -32,7 +41,7 @@ const CreateNewBlogForm = ({
                     <input
                         // type="url"
                         value={url}
-                        onChange={handleUrlChange}
+                        onChange={({ target }) => setUrl(target.value)}
                     />
                 </div>
                 <div>
@@ -40,7 +49,7 @@ const CreateNewBlogForm = ({
                     <input
                         type="number"
                         value={likes}
-                        onChange={handleLikesChange}
+                        onChange={({ target }) => setLikes(Number(target.value))}
                         min="0"
                     />
 

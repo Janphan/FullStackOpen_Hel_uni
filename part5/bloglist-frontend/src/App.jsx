@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 // Blog component not needed for table layout
 import blogService from './services/blogs'
@@ -15,11 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
-  const [likes, setLikes] = useState(0)
+  const blogFormRef = useRef()
 
 
   useEffect(() => {
@@ -64,18 +60,14 @@ const App = () => {
   }
 
   //Create new blogs into its own component
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
+  const handleCreateBlog = async (blogObject) => {
     try {
-      const createdBlog = await blogService.create({ title, author, url, likes })
+      blogFormRef.current.toggleVisibility()
+      const createdBlog = await blogService.create(blogObject)
       const successMessage = `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
       setBlogs(blogs.concat(createdBlog))
       setErrorMessage(successMessage)
       setIsError(false)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      setLikes(0)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -118,7 +110,7 @@ const App = () => {
 
   const createBlogForm = () => {
     return (
-      <Togglable buttonLabel="create new blog">
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <CreateNewBlogForm
           createBlog={handleCreateBlog}
         />
