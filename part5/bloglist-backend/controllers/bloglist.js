@@ -48,15 +48,15 @@ bloglistRouter.delete('/:id', userExtractor, async (request, response, next) => 
 // Update blog details (title, author, url, likes)
 bloglistRouter.put('/:id', userExtractor, async (request, response, next) => {
     const { title, author, url, likes } = request.body
-    const blog = await Blog.findByIdAndUpdate(request.params.id, { title, author, url, likes }, { new: true })
+    const updateBlog = await Blog.findByIdAndUpdate(
+        request.params.id, { title, author, url, likes },
+        { new: true, runValidators: true, context: 'query' })
         .populate('user', { username: 1, name: 1 })
-    if (!blog) {
+    if (!updateBlog) {
         return response.status(404).json({ error: 'Blog not found' })
     }
 
-    const updatedBlog = await blog.save()
-    response.json(updatedBlog)
-
+    response.json(updateBlog)
 })
 
 module.exports = bloglistRouter //
