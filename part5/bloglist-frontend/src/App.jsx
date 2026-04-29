@@ -40,6 +40,7 @@ const App = () => {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
+      console.log('User logged in', user)
 
       setUser(user)
       setUsername('')
@@ -83,8 +84,8 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
-    console.log("Liking blog:", blog)
-    console.log("type of blog user", typeof blog.user)
+    console.log('Liking blog:', blog)
+    console.log('type of blog user', typeof blog.user)
 
     const blogToUpdate = {
       ...blog,
@@ -125,10 +126,26 @@ const App = () => {
     return b.likes - a.likes
   }
 
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+      } catch (exception) {
+        const message = exception?.response?.data?.error || 'Error removing blog'
+        setErrorMessage(message)
+        setIsError(true)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      }
+    }
+  }
+
   return (
     <div>
       <h2>Login</h2>
-      {errorMessage && (<div className={isError ? "error" : "success"}>{errorMessage}</div>)}
+      {errorMessage && (<div className={isError ? 'error' : 'success'}>{errorMessage}</div>)}
 
       {user === null ? loginForm() :
         (<div>
@@ -142,6 +159,8 @@ const App = () => {
               key={blog.id}
               blog={blog}
               handleLike={() => handleLike(blog)}
+              handleRemove={() => handleRemove(blog)}
+              currentUser={user}
             />
           ))}
         </div>
