@@ -20,15 +20,15 @@ const Blog = ({ blog, handleLike, handleRemove, currentUser }) => {
     < div style={blogStyle} className='blog' >
       <div>
         {blog.title} by {blog.author}
-        <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
+        <button className='viewButton' onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
       </div>
 
       {visible && (
         <div>
           <div>{blog.url}</div>
-          <div>Likes {blog.likes} <button onClick={handleLike}>like</button></div>
+          <div>Likes {blog.likes} <button className='likeButton' onClick={handleLike}>like</button></div>
           <div>{blog.user?.name || 'Unknown user'}</div>
-          {showDeleteButton && <button onClick={handleRemove}>remove</button>}
+          {showDeleteButton && <button className='removeButton' onClick={handleRemove}>remove</button>}
         </div>
       )}
     </div >
