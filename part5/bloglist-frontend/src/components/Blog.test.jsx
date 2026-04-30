@@ -52,3 +52,26 @@ test('clicking the view button shows url and number of likes', async () => {
   const likesElement = screen.getByText('Likes 35')
   expect(likesElement).toBeDefined()
 })
+
+test('clicking the like button twice calls event handler twice', async () => {
+  const blog = {
+    title: 'Component testing is done with react-testing-library',
+    author: 'Matti Luukkainen',
+    url: 'http://testurl.com',
+    likes: 35
+  }
+
+  const mockHandler = vi.fn()
+  const user = userEvent.setup()
+
+  render(<Blog blog={blog} handleLike={mockHandler} />)
+
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
