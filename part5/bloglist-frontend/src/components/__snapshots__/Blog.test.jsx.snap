@@ -1,0 +1,48 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`render correctly and matches snapshot 1`] = `
+<div>
+  <div>
+    <form>
+      <div>
+        title
+        <input
+          placeholder="title"
+          type="text"
+          value=""
+        />
+      </div>
+      <div>
+        author
+        <input
+          placeholder="author"
+          type="text"
+          value=""
+        />
+      </div>
+      <div>
+        url
+        <input
+          placeholder="url"
+          value=""
+        />
+      </div>
+      <div>
+        likes
+        <input
+          min="0"
+          placeholder="likes"
+          type="number"
+          value="0"
+        />
+      </div>
+      <button
+        id="create-blog-button"
+        type="submit"
+      >
+        create
+      </button>
+    </form>
+  </div>
+</div>
+`;

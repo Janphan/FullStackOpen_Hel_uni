@@ -108,3 +108,10 @@ test('<CreateNewBlogForm/> updates parent state and calls onSubmit', async () =>
   expect(createBlog.mock.calls).toHaveLength(1)
   expect(createBlog.mock.calls[0][0]).toEqual(blog)
 })
+
+test('render correctly and matches snapshot', () => {
+  const createBlog = vi.fn()
+  const { container } = render(<CreateNewBlogForm createBlog={createBlog} />)
+
+  expect(container).toMatchSnapshot()
+})
