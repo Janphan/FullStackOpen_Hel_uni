@@ -21,40 +21,46 @@ const CreateNewBlogForm = ({
     <div>
       <form onSubmit={addBlog}>
         <div>
-                    title
+          title
           <input
             type="text"
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            placeholder="title"
           />
         </div>
         <div>
-                    author
+          author
           <input
             type="text"
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
+            placeholder="author"
           />
         </div>
         <div>
-                    url
+          url
           <input
             // type="url"
             value={url}
             onChange={({ target }) => setUrl(target.value)}
+            placeholder="url"
           />
         </div>
         <div>
-                    likes
+          likes
           <input
             type="number"
             value={likes}
             onChange={({ target }) => setLikes(Number(target.value))}
             min="0"
+            placeholder="likes"
           />
 
         </div>
-        <button type="submit">create</button>
+        <button type="submit" id="create-blog-button">
+          create
+        </button>
       </form>
     </div>
   )

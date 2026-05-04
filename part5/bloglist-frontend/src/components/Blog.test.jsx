@@ -3,6 +3,7 @@ import { expect, test } from 'vitest'
 import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 import { vi } from 'vitest'
+import CreateNewBlogForm from '../forms/createNewBlogForm'
 
 test('renders content', () => {
   const blog = {
@@ -74,4 +75,36 @@ test('clicking the like button twice calls event handler twice', async () => {
   await user.click(likeButton)
 
   expect(mockHandler.mock.calls).toHaveLength(2)
+})
+
+test('<CreateNewBlogForm/> updates parent state and calls onSubmit', async () => {
+  const createBlog = vi.fn()
+  const user = userEvent.setup()
+
+  render(<CreateNewBlogForm createBlog={createBlog} />)
+  const blog = {
+    title: 'Component testing is done with react-testing-library',
+    author: 'Matti Luukkainen',
+    url: 'http://testurl.com',
+    likes: 0
+  }
+  // const createNewBlog = screen.getByText('create new blog')
+  // await user.click(createNewBlog)
+
+  const input = screen.getAllByRole('textbox')
+  const sendButton = screen.getByText('create')
+
+  const titleInput = screen.getByPlaceholderText('title')
+  const authorInput = screen.getByPlaceholderText('author')
+  const urlInput = screen.getByPlaceholderText('url')
+  const likesInput = screen.getByPlaceholderText('likes')
+
+  await user.type(titleInput, blog.title)
+  await user.type(authorInput, blog.author)
+  await user.type(urlInput, blog.url)
+  await user.type(likesInput, blog.likes.toString())
+  await user.click(sendButton)
+
+  expect(createBlog.mock.calls).toHaveLength(1)
+  expect(createBlog.mock.calls[0][0]).toEqual(blog)
 })
