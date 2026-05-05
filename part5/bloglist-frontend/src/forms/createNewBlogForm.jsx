@@ -57,7 +57,7 @@ const CreateNewBlogForm = ({
           <label>
             likes
             <input
-              // type="number"
+              type="number"
               value={likes}
               onChange={({ target }) => setLikes(Number(target.value))}
               min="0"
