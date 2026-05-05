@@ -6,3 +6,5 @@ Part 2: Rendering a collection, modules, forms, getting data from server, alteri
 Part 3: Programming a server with NodeJS and Express ( This is done in the same folder with Part 2)
 
 Part 4: Structure of backend application, introduction to testing
+
+Part 5: Testing and implement token based authentication.
