@@ -1,7 +1,19 @@
 const { test, expect, describe, beforeEach } = require('@playwright/test')
+const { loginWith, createBlog } = require('./helper')
 
 describe('Blog app', () => {
-    beforeEach(async ({ page }) => {
+    beforeEach(async ({ page, request }) => {
+        //empty the database
+        await page.request.post('http://localhost:3001/api/testing/reset')
+
+        //create a user to test with
+        await request.post('http://localhost:3001/api/users', {
+            data: {
+                name: 'Root',
+                username: 'root',
+                password: 'secret'
+            }
+        })
         await page.goto('http://localhost:5173')
     })
 
@@ -17,5 +29,4 @@ describe('Blog app', () => {
         await loginSubmitButton.click()
         await expect(loginSubmitButton).toBeVisible()
     })
-
 })
