@@ -21,44 +21,53 @@ const CreateNewBlogForm = ({
     <div>
       <form onSubmit={addBlog}>
         <div>
-          title
-          <input
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-            placeholder="title"
-          />
+          <label>
+            title
+            <input
+              type="text"
+              value={title}
+              onChange={({ target }) => setTitle(target.value)}
+              placeholder="title"
+            />
+          </label>
         </div>
         <div>
-          author
-          <input
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-            placeholder="author"
-          />
+          <label>
+            author
+            <input
+              type="text"
+              value={author}
+              onChange={({ target }) => setAuthor(target.value)}
+              placeholder="author"
+            />
+          </label>
         </div>
         <div>
-          url
-          <input
-            // type="url"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-            placeholder="url"
-          />
+          <label>
+            url
+            <input
+              // type="url"
+              value={url}
+              onChange={({ target }) => setUrl(target.value)}
+              placeholder="url"
+            />
+          </label>
         </div>
         <div>
-          likes
-          <input
-            type="number"
-            value={likes}
-            onChange={({ target }) => setLikes(Number(target.value))}
-            min="0"
-            placeholder="likes"
-          />
-
+          <label>
+            likes
+            <input
+              // type="number"
+              value={likes}
+              onChange={({ target }) => setLikes(Number(target.value))}
+              min="0"
+              placeholder="likes"
+            />
+          </label>
         </div>
-        <button type="submit" id="create-blog-button">
+        <div>
+        </div>
+        <button type="submit" id="create-blog-button" name="create">
           create
         </button>
       </form>

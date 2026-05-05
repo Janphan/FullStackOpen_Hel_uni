@@ -29,4 +29,20 @@ describe('Blog app', () => {
         await loginSubmitButton.click()
         await expect(loginSubmitButton).toBeVisible()
     })
+
+    describe('when logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'root', 'secret')
+        })
+        test('user can create a blog', async ({ page }) => {
+            const newBlog = {
+                title: 'test',
+                author: 'tester',
+                url: 'http://test.com',
+                likes: 145
+            }
+            await createBlog(page, newBlog.title, newBlog.author, newBlog.url, newBlog.likes)
+            await expect(page.getByText(`${newBlog.title} by ${newBlog.author}`)).toBeVisible()
+        })
+    })
 })
