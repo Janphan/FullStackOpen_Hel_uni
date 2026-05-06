@@ -59,5 +59,23 @@ describe('Blog app', () => {
             await likeButton.click()
             await expect(page.getByText(`likes ${newBlog.likes + 1}`)).toBeVisible()
         })
+        test('user can remove a blog', async ({ page }) => {
+            const newBlog = {
+                title: 'test',
+                author: 'tester',
+                url: 'http://test.com',
+                likes: 145
+            }
+
+            //create a blog to remove
+            await createBlog(page, newBlog.title, newBlog.author, newBlog.url, newBlog.likes)
+            //remove the blog
+            const viewButton = page.getByRole('button', { name: 'view' })
+            await viewButton.click()
+            page.on('dialog', async dialog => await dialog.accept())
+            const removeButton = page.getByRole('button', { name: 'remove' })
+            await removeButton.click()
+            await expect(page.getByText(`${newBlog.title} by ${newBlog.author}`)).not.toBeVisible()
+        })
     })
 })
