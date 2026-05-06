@@ -77,5 +77,32 @@ describe('Blog app', () => {
             await removeButton.click()
             await expect(page.getByText(`${newBlog.title} by ${newBlog.author}`)).not.toBeVisible()
         })
+        test('only the owner can see the remove button', async ({ page, request }) => {
+            const newBlog = {
+                title: 'test',
+                author: 'tester',
+                url: 'http://test.com',
+                likes: 145
+            }
+            await createBlog(page, newBlog.title, newBlog.author, newBlog.url, newBlog.likes)
+            //create another user
+            await request.post('http://localhost:3001/api/users', {
+                data: {
+                    name: 'Tester',
+                    username: 'tester',
+                    password: 'secret'
+                }
+            })
+            //logout and login with the new user
+            await page.getByRole('button', { name: 'logout' }).click()
+            await loginWith(page, 'tester', 'secret')
+
+            const blogContainer = page.locator('.blog').filter({ hasText: `${newBlog.title} by ${newBlog.author}` })
+
+            await blogContainer.getByRole('button', { name: 'view' }).click()
+            await viewButton.click()
+            const removeButton = page.getByRole('button', { name: 'remove' })
+            await expect(removeButton).not.toBeVisible()
+        })
     })
 })
