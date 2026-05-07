@@ -104,5 +104,36 @@ describe('Blog app', () => {
             const removeButton = page.getByRole('button', { name: 'remove' })
             await expect(removeButton).not.toBeVisible()
         })
+
+        test('blogs are ordered by likes', async ({ page }) => {
+            const blogs = [
+                {
+                    title: 'test1',
+                    author: 'tester1',
+                    url: 'http://test1.com',
+                    likes: 5
+                },
+                {
+                    title: 'test2',
+                    author: 'tester2',
+                    url: 'http://test2.com',
+                    likes: 10
+                }
+            ]
+            //add the blogs to the database
+            await createBlog(page, blogs[0].title, blogs[0].author, blogs[0].url, blogs[0].likes)
+            await createBlog(page, blogs[1].title, blogs[1].author, blogs[1].url, blogs[1].likes)
+
+            await expect(page.getByText('test2 by tester2')).toBeVisible()
+            //check that the blogs are ordered by likes
+            const blogContainers = page.locator('.blog')
+            const texts = await page.locator('.blog').allTextContents()
+            console.log(texts)
+            await expect(page.locator('.blog')).toHaveCount(2)
+
+            //check that the first blog is the one with more likes
+            await expect(blogContainers.first()).toContainText('test2 by tester2')
+            await expect(blogContainers.last()).toContainText('test1 by tester1')
+        })
     })
 })

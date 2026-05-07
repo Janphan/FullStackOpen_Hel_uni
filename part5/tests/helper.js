@@ -8,12 +8,14 @@ const loginWith = async (page, username, password) => {
 }
 
 const createBlog = async (page, title, author, url, likes) => {
-    await page.getByRole('button', { name: 'new blog' }).click()
+    await page.getByRole('button', { name: 'create new blog' }).click()
     await page.getByLabel('title').fill(title)
     await page.getByLabel('author').fill(author)
     await page.getByLabel('url').fill(url)
     await page.getByLabel('likes').fill(String(likes))
     await page.getByRole('button', { name: 'create' }).click()
+    // wait until the new blog appears in the list to avoid race conditions
+    await page.locator('.blog').filter({ hasText: `${title} by ${author}` }).waitFor({ state: 'visible' })
 }
 
 
