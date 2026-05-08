@@ -6,7 +6,7 @@ import Togglable from './components/Togglable'
 import BlogList from './components/BlogList'
 import LoginPage from './components/LoginPage'
 import Blog from './components/Blog'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom'
 
 const padding = { paddingRight: 5 }
 
@@ -17,6 +17,7 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
   const blogFormRef = useRef()
+  const navigate = useNavigate()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -49,6 +50,7 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+      navigate('/')
     } catch (exception) {
       const message = exception?.response?.data?.error || 'Error creating blog'
       setErrorMessage(message)
@@ -92,6 +94,7 @@ const App = () => {
       try {
         await blogService.remove(blog.id)
         setBlogs(blogs.filter(b => b.id !== blog.id))
+        navigate('/')
       } catch (exception) {
         const message = exception?.response?.data?.error || 'Error removing blog'
         setErrorMessage(message)
@@ -136,13 +139,14 @@ const App = () => {
             setIsError={setIsError}
           />
         } />
-        <Route path="/create" element={
-          <CreateNewBlogForm
-            user={user}
-            handleCreateBlog={handleCreateBlog}
-            blogFormRef={blogFormRef}
-          />
-        } />
+        {user && (
+          <Route path="/create" element={
+            <CreateNewBlogForm
+              user={user}
+              handleCreateBlog={handleCreateBlog}
+              blogFormRef={blogFormRef}
+            />
+          } />)}
         <Route path="/blogs/:id" element={
           <Blog
             blogs={blogs}
