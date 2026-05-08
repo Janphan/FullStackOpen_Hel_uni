@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 const CreateNewBlogForm = ({
-  handleCreateBlog,
-  blogFormRef,
-  user
+  handleCreateBlog
 }) => {
   const navigate = useNavigate()
 

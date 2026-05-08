@@ -91,7 +91,6 @@ test('<CreateNewBlogForm/> updates parent state and calls onSubmit', async () =>
   // const createNewBlog = screen.getByText('create new blog')
   // await user.click(createNewBlog)
 
-  const input = screen.getAllByRole('textbox')
   const sendButton = screen.getByText('create')
 
   const titleInput = screen.getByPlaceholderText('title')
