@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 
-const Blog = ({ blogs, handleLike, handleRemove, currentUser }) => {
+const Blog = ({ blogs, currentUser, handleLike, handleRemove }) => {
   // const [visible, setVisible] = useState(false)
   const id = useParams().id
   const blog = blogs.find(n => n.id === id)
@@ -15,7 +15,6 @@ const Blog = ({ blogs, handleLike, handleRemove, currentUser }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-
   // const toggleVisibility = () => {
   //   setVisible(!visible)
   // }
@@ -27,9 +26,6 @@ const Blog = ({ blogs, handleLike, handleRemove, currentUser }) => {
     <div style={blogStyle} className='blog'>
       <div className='blogHeader'>
         {blog.title} by {blog.author}
-        {/* <button className='viewButton' onClick={toggleVisibility}>
-          {visible ? 'hide' : 'view'}
-        </button> */}
       </div>
       <div className='blogContent'>
         <div>{blog.url}</div>

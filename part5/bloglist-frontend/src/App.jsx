@@ -2,17 +2,15 @@ import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import blogService from './services/blogs'
 import CreateNewBlogForm from './forms/createNewBlogForm'
-import Togglable from './components/Togglable'
 import BlogList from './components/BlogList'
 import LoginPage from './components/LoginPage'
 import Blog from './components/Blog'
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 
 const padding = { paddingRight: 5 }
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [isError, setIsError] = useState(true)
@@ -34,10 +32,14 @@ const App = () => {
     }
   }, [])
 
-  //Create new blogs into its own component
   const handleCreateBlog = async (blogObject) => {
     try {
-      blogFormRef.current.toggleVisibility()
+      if (blogFormRef && blogFormRef.current && typeof blogFormRef.current.toggleVisibility === 'function') {
+        blogFormRef.current.toggleVisibility()
+      }
+      if (user && user.token) {
+        blogService.setToken(user.token)
+      }
       const createdBlog = await blogService.create(blogObject)
       const blogWithUser = {
         ...createdBlog,
@@ -59,6 +61,11 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
   }
 
   const handleLike = async (blog) => {
@@ -84,11 +91,6 @@ const App = () => {
     setBlogs(blogs.map(b => b.id === blog.id ? updateBlog : b))
   }
 
-  const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    setUser(null)
-  }
-
   const handleRemove = async (blog) => {
     if (window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`)) {
       try {
@@ -107,26 +109,22 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <div>
+    <div>
+      <nav>
         <Link style={padding} to="/">blogs</Link>
         <Link style={padding} to="/create">new blog</Link>
-        {user === null ? (
-          <Link style={padding} to="/login">login</Link>
+        {user ? (
+          <button onClick={handleLogout}>logout</button>
         ) : (
-          <>
-            <button style={padding} onClick={handleLogout} name="logout">logout</button>
-          </>
+          <Link style={padding} to="/login">login</Link>
         )}
+      </nav>
 
-      </div>
       <Routes>
         <Route path="/" element={
           <BlogList
             blogs={blogs}
             user={user}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
           />
         } />
         <Route path="/login" element={
@@ -146,7 +144,8 @@ const App = () => {
               handleCreateBlog={handleCreateBlog}
               blogFormRef={blogFormRef}
             />
-          } />)}
+          } />
+        )}
         <Route path="/blogs/:id" element={
           <Blog
             blogs={blogs}
@@ -156,9 +155,7 @@ const App = () => {
           />
         } />
       </Routes>
-
-    </Router>
-
+    </div>
   )
 }
 
