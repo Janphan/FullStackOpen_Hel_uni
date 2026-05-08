@@ -5,6 +5,7 @@ import CreateNewBlogForm from './forms/createNewBlogForm'
 import Togglable from './components/Togglable'
 import BlogList from './components/BlogList'
 import LoginPage from './components/LoginPage'
+import Blog from './components/Blog'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const padding = { paddingRight: 5 }
@@ -59,6 +60,15 @@ const App = () => {
   }
 
   const handleLike = async (blog) => {
+    if (!user) {
+      setErrorMessage('Please log in to like blogs')
+      setIsError(true)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+      return
+    }
+
     console.log('Liking blog:', blog)
     console.log('type of blog user', typeof blog.user)
 
@@ -97,6 +107,7 @@ const App = () => {
     <Router>
       <div>
         <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/create">new blog</Link>
         {user === null ? (
           <Link style={padding} to="/login">login</Link>
         ) : (
@@ -104,6 +115,7 @@ const App = () => {
             <button style={padding} onClick={handleLogout} name="logout">logout</button>
           </>
         )}
+
       </div>
       <Routes>
         <Route path="/" element={
@@ -122,6 +134,21 @@ const App = () => {
             setErrorMessage={setErrorMessage}
             isError={isError}
             setIsError={setIsError}
+          />
+        } />
+        <Route path="/create" element={
+          <CreateNewBlogForm
+            user={user}
+            handleCreateBlog={handleCreateBlog}
+            blogFormRef={blogFormRef}
+          />
+        } />
+        <Route path="/blogs/:id" element={
+          <Blog
+            blogs={blogs}
+            currentUser={user}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
           />
         } />
       </Routes>
