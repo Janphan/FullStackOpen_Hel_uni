@@ -84,6 +84,21 @@ describe('Blog app', () => {
             await expect(page.getByRole('button', { name: 'like' })).toBeVisible()
             await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
         })
+        test('The blog’s creator is also shown the delete button', async ({ page }) => {
+            const newBlog = {
+                title: 'Test',
+                author: 'test',
+                url: 'test.com',
+                likes: 12
+            }
+            //user1 creates a blog
+            await loginWith(page, 'root', 'secret')
+            await createBlog(page, newBlog.title, newBlog.author, newBlog.url, newBlog.likes)
+            await page.getByRole('link', { name: `${newBlog.title} by ${newBlog.author}` }).waitFor({ state: 'visible' })
+            await page.getByRole('link', { name: `${newBlog.title} by ${newBlog.author}` }).click()
+            //remove button should be visible
+            await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+        })
     })
 
 
