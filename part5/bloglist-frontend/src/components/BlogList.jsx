@@ -12,10 +12,10 @@ const BlogList = ({ blogs }) => {
   return (
 
     <div>
-      <h2>Blog</h2>
+      <h2>Blogs</h2>
       {[...blogs].sort(compareLikes).map(blog => (
         <li key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          <Link to={`/blogs/${blog.id}`}>{blog.title} by {blog.author}</Link>
         </li>
       ))}
     </div>

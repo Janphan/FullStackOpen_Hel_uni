@@ -152,6 +152,7 @@ const App = () => {
             currentUser={user}
             handleLike={handleLike}
             handleRemove={handleRemove}
+
           />
         } />
       </Routes>
