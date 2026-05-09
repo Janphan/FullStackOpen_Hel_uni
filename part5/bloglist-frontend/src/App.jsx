@@ -6,6 +6,7 @@ import BlogList from './components/BlogList'
 import LoginPage from './components/LoginPage'
 import Blog from './components/Blog'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Container } from '@mui/material'
 
 const padding = { paddingRight: 5 }
 
@@ -109,54 +110,56 @@ const App = () => {
   }
 
   return (
-    <div>
-      <nav>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/create">new blog</Link>
-        {user ? (
-          <button onClick={handleLogout}>logout</button>
-        ) : (
-          <Link style={padding} to="/login">login</Link>
-        )}
-      </nav>
+    < Container>
+      <div>
+        <nav>
+          <Link style={padding} to="/">blogs</Link>
+          <Link style={padding} to="/create">new blog</Link>
+          {user ? (
+            <button onClick={handleLogout}>logout</button>
+          ) : (
+            <Link style={padding} to="/login">login</Link>
+          )}
+        </nav>
 
-      <Routes>
-        <Route path="/" element={
-          <BlogList
-            blogs={blogs}
-            user={user}
-          />
-        } />
-        <Route path="/login" element={
-          <LoginPage
-            user={user}
-            setUser={setUser}
-            errorMessage={errorMessage}
-            setErrorMessage={setErrorMessage}
-            isError={isError}
-            setIsError={setIsError}
-          />
-        } />
-        {user && (
-          <Route path="/create" element={
-            <CreateNewBlogForm
+        <Routes>
+          <Route path="/" element={
+            <BlogList
+              blogs={blogs}
               user={user}
-              handleCreateBlog={handleCreateBlog}
-              blogFormRef={blogFormRef}
             />
           } />
-        )}
-        <Route path="/blogs/:id" element={
-          <Blog
-            blogs={blogs}
-            currentUser={user}
-            handleLike={handleLike}
-            handleRemove={handleRemove}
+          <Route path="/login" element={
+            <LoginPage
+              user={user}
+              setUser={setUser}
+              errorMessage={errorMessage}
+              setErrorMessage={setErrorMessage}
+              isError={isError}
+              setIsError={setIsError}
+            />
+          } />
+          {user && (
+            <Route path="/create" element={
+              <CreateNewBlogForm
+                user={user}
+                handleCreateBlog={handleCreateBlog}
+                blogFormRef={blogFormRef}
+              />
+            } />
+          )}
+          <Route path="/blogs/:id" element={
+            <Blog
+              blogs={blogs}
+              currentUser={user}
+              handleLike={handleLike}
+              handleRemove={handleRemove}
 
-          />
-        } />
-      </Routes>
-    </div>
+            />
+          } />
+        </Routes>
+      </div>
+    </Container>
   )
 }
 

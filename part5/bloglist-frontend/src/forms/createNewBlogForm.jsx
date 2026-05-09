@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { TextField, Button } from '@mui/material'
+
 const CreateNewBlogForm = ({
   handleCreateBlog
 }) => {
@@ -21,59 +23,51 @@ const CreateNewBlogForm = ({
   }
   return (
     <div>
+      <h2>create new blog</h2>
       <form onSubmit={addBlog}>
-        <div>
-          <label>
-            title
-            <input
-              type="text"
-              value={title}
-              onChange={({ target }) => setTitle(target.value)}
-              placeholder="title"
-            />
-          </label>
+        <div style={{ marginBottom: 10 }}>
+          <TextField
+            label="Title"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+            placeholder="Title"
+            fullWidth
+            sx={{ maxWidth: 520 }}
+          />
         </div>
-        <div>
-          <label>
-            author
-            <input
-              type="text"
-              value={author}
-              onChange={({ target }) => setAuthor(target.value)}
-              placeholder="author"
-            />
-          </label>
+        <div style={{ marginBottom: 10 }}>
+          <TextField
+            label="Author"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+            placeholder="Author"
+            fullWidth
+            sx={{ maxWidth: 520 }}
+          />
         </div>
-        <div>
-          <label>
-            url
-            <input
-              // type="url"
-              value={url}
-              onChange={({ target }) => setUrl(target.value)}
-              placeholder="url"
-            />
-          </label>
+        <div style={{ marginBottom: 10 }}>
+          <TextField
+            label="Url"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+            fullWidth
+            sx={{ maxWidth: 520 }}
+            placeholder="Url"
+          />
         </div>
-        <div>
-          <label>
-            likes
-            <input
-              type="number"
-              value={likes}
-              onChange={({ target }) => setLikes(Number(target.value))}
-              min="0"
-              placeholder="likes"
-            />
-          </label>
-        </div>
-        <div>
-        </div>
-        <button type="submit" id="create-blog-button" name="create">
+        {/* <div>
+          <TextField
+            label="Likes"
+            value={likes}
+            onChange={({ target }) => setLikes(Number(target.value))}
+            min="0"
+          />
+        </div> */}
+        <Button type="submit" name="create" variant="contained" style={{ marginTop: 10 }}>
           create
-        </button>
-      </form>
-    </div>
+        </Button>
+      </form >
+    </div >
   )
 }
 
