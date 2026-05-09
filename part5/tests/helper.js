@@ -4,8 +4,12 @@ const loginWith = async (page, username, password) => {
     await page.getByLabel('username').fill(username)
     await page.getByLabel('password').fill(password)
     await page.getByRole('button', { name: 'login' }).click()
-    // wait for logout button to appear, indicating login was successful
-    await page.getByRole('button', { name: 'logout' }).waitFor({ state: 'visible' })
+    // wait for logout button to appear (if login successful) or error message to appear
+    try {
+        await page.getByRole('button', { name: 'logout' }).waitFor({ state: 'visible', timeout: 5000 })
+    } catch (e) {
+        // Login may have failed, error message should be displayed
+    }
 }
 
 const createBlog = async (page, title, author, url, likes) => {
