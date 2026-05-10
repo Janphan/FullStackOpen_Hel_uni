@@ -5,8 +5,10 @@ import CreateNewBlogForm from './forms/createNewBlogForm'
 import BlogList from './components/BlogList'
 import LoginPage from './components/LoginPage'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { Container } from '@mui/material'
+import { AppBar, Toolbar, Button, Typography, Box, IconButton } from '@mui/material'
 
 const padding = { paddingRight: 5 }
 
@@ -17,6 +19,8 @@ const App = () => {
   const [isError, setIsError] = useState(true)
   const blogFormRef = useRef()
   const navigate = useNavigate()
+  const [notification, setNotification] = useState(null)
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -48,18 +52,18 @@ const App = () => {
       }
       const successMessage = `A new blog "${createdBlog.title}" by ${createdBlog.author} added`
       setBlogs(blogs.concat(blogWithUser))
-      setErrorMessage(successMessage)
+      setNotification({ text: successMessage, type: 'success' })
       setIsError(false)
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
       navigate('/')
     } catch (exception) {
       const message = exception?.response?.data?.error || 'Error creating blog'
-      setErrorMessage(message)
+      setNotification({ text: message, type: 'error' })
       setIsError(true)
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
     }
   }
@@ -71,10 +75,10 @@ const App = () => {
 
   const handleLike = async (blog) => {
     if (!user) {
-      setErrorMessage('Please log in to like blogs')
+      setNotification({ text: 'Please log in to like blogs', type: 'error' })
       setIsError(true)
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotification(null)
       }, 5000)
       return
     }
@@ -100,66 +104,81 @@ const App = () => {
         navigate('/')
       } catch (exception) {
         const message = exception?.response?.data?.error || 'Error removing blog'
-        setErrorMessage(message)
+        setNotification({ text: message, type: 'error' })
         setIsError(true)
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotification(null)
         }, 5000)
       }
     }
   }
 
   return (
-    < Container>
-      <div>
-        <nav>
-          <Link style={padding} to="/">blogs</Link>
-          <Link style={padding} to="/create">new blog</Link>
-          {user ? (
-            <button onClick={handleLogout}>logout</button>
-          ) : (
-            <Link style={padding} to="/login">login</Link>
-          )}
-        </nav>
+    <Container>
 
-        <Routes>
-          <Route path="/" element={
-            <BlogList
-              blogs={blogs}
-              user={user}
-            />
-          } />
-          <Route path="/login" element={
-            <LoginPage
-              user={user}
-              setUser={setUser}
-              errorMessage={errorMessage}
-              setErrorMessage={setErrorMessage}
-              isError={isError}
-              setIsError={setIsError}
-            />
-          } />
-          {user && (
-            <Route path="/create" element={
-              <CreateNewBlogForm
-                user={user}
-                handleCreateBlog={handleCreateBlog}
-                blogFormRef={blogFormRef}
-              />
-            } />
-          )}
-          <Route path="/blogs/:id" element={
-            <Blog
-              blogs={blogs}
-              currentUser={user}
-              handleLike={handleLike}
-              handleRemove={handleRemove}
+      <Box sx={{ flexGrow: 1 }}>
+        < AppBar position="static" >
 
+          <Toolbar>
+            <Typography size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Blog App
+            </Typography>
+            <Button color="inherit" sx={style}><Link style={padding} to="/">blogs</Link></Button>
+            <Button color="inherit" sx={style}><Link style={padding} to="/create">new blog</Link></Button>
+            {user ? (
+              <Button color="inherit" onClick={handleLogout} sx={style}>
+                logout
+              </Button>
+            ) : (
+              <Button color="inherit" sx={style}><Link style={padding} to="/login">login</Link></Button>
+            )}
+          </Toolbar>
+        </AppBar>
+      </Box>
+
+      <Notification notification={notification} />
+
+      <Routes>
+        <Route path="/" element={
+          <BlogList
+            blogs={blogs}
+            user={user}
+          />
+        } />
+        <Route path="/login" element={
+          <LoginPage
+            user={user}
+            setUser={setUser}
+            errorMessage={errorMessage}
+            setErrorMessage={setErrorMessage}
+            isError={isError}
+            setIsError={setIsError}
+          />
+        } />
+        {user && (
+          <Route path="/create" element={
+            <CreateNewBlogForm
+              user={user}
+              handleCreateBlog={handleCreateBlog}
+              blogFormRef={blogFormRef}
             />
           } />
-        </Routes>
-      </div>
-    </Container>
+        )}
+        <Route path="/blogs/:id" element={
+          <Blog
+            blogs={blogs}
+            currentUser={user}
+            handleLike={handleLike}
+            handleRemove={handleRemove}
+
+          />
+        } />
+      </Routes>
+    </Container >
   )
 }
 
