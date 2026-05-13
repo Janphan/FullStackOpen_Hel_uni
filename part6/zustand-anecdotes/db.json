@@ -3,46 +3,46 @@
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
-      "votes": 4
+      "votes": 15
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
       "id": "21149",
-      "votes": 0
+      "votes": 5
     },
     {
       "content": "The first 90 percent of the code accounts for the first 10 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.",
       "id": "69581",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.",
       "id": "36975",
-      "votes": 0
+      "votes": 5
     },
     {
       "content": "Premature optimization is the root of all evil.",
       "id": "25170",
-      "votes": 0
+      "votes": 1
     },
     {
       "content": "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
       "id": "98312",
-      "votes": 1
+      "votes": 5
     },
     {
       "content": "Test",
-      "votes": 0,
+      "votes": 11,
       "id": "ICfYrn2PKa8"
     },
     {
       "content": "Test 123",
-      "votes": 0,
+      "votes": 1,
       "id": "h3T5yndVLbY"
     },
     {
       "content": "Test",
-      "votes": 0,
+      "votes": 7,
       "id": "6I_Ib5jo54Y"
     },
     {
@@ -54,6 +54,21 @@
       "content": "Test 4567",
       "votes": 0,
       "id": "QA1hNaBwKpg"
+    },
+    {
+      "content": "꼬리살랑살랑 ~~~어이쿠 무셩ㅎ",
+      "votes": 6,
+      "id": "6WFjG6EiEZY"
+    },
+    {
+      "content": "Hello from Finland",
+      "votes": 0,
+      "id": "953uLRRBMic"
+    },
+    {
+      "content": "Hello again",
+      "votes": 0,
+      "id": "yHbcGtvC5UU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

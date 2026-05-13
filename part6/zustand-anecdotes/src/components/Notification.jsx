@@ -1,3 +1,5 @@
+import { useNotification } from '../store/notificationStore'
+
 const Notification = () => {
   const style = {
     border: 'solid',
@@ -5,8 +7,11 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 10
   }
+  const message = useNotification()
+  if (!message) return null
+  console.log(message)
 
-  return <div style={style}>render here notification...</div>
+  return <div style={style}>{message}</div>
 }
 
 export default Notification

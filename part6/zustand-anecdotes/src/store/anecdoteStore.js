@@ -1,6 +1,6 @@
 
 import { create } from 'zustand'
-import anecdotesService from './services/anecdotes'
+import anecdotesService from '../services/anecdotes'
 
 const useAnecdoteStore = create((set, get) => ({
   anecdotes: [],
@@ -16,6 +16,7 @@ const useAnecdoteStore = create((set, get) => ({
         await anecdotesService.update(id, updatedAnecdote)
         set((state) => ({
           anecdotes: state.anecdotes.map(a => a.id === id ? updatedAnecdote : a)
+
         }))
       }
     },
