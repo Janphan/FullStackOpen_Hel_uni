@@ -1,6 +1,5 @@
 
 import { create } from 'zustand'
-import { anecdotesAtStart } from './anecdotesData'
 
 const getId = () => (100000 * Math.random()).toFixed(0)
 
@@ -11,7 +10,7 @@ const asObject = anecdote => ({
 })
 
 const useAnecdoteStore = create((set) => ({
-  anecdotes: anecdotesAtStart.map(asObject),
+  anecdotes: [],
   filter: '',
   actions: {
     addAnecdote: (anecdote) => set((state) => ({
@@ -24,7 +23,9 @@ const useAnecdoteStore = create((set) => ({
           : anecdote
       )
     })),
-    setFilter: value => set(() => ({ filter: value }))
+    setFilter: value => set(() => ({ filter: value })),
+    initialize: anecdotes => set(() => ({ anecdotes }))
+
   },
 
 }))
