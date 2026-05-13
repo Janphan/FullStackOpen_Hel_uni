@@ -1,31 +1,30 @@
 
 import { create } from 'zustand'
+import anecdotesService from './services/anecdotes'
 
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = anecdote => ({
-  content: anecdote,
-  id: getId(),
-  votes: 0
-})
-
-const useAnecdoteStore = create((set) => ({
+const useAnecdoteStore = create((set, get) => ({
   anecdotes: [],
   filter: '',
   actions: {
     addAnecdote: (anecdote) => set((state) => ({
-      anecdotes: [...state.anecdotes, asObject(anecdote)]
+      anecdotes: state.anecdotes.concat(anecdote)
     })),
-    voteAnecdote: (id) => set((state) => ({
-      anecdotes: state.anecdotes.map(anecdote =>
-        anecdote.id === id
-          ? { ...anecdote, votes: anecdote.votes + 1 }
-          : anecdote
-      )
-    })),
+    voteAnecdote: async (id) => {
+      const anecdoteToUpdate = get().anecdotes.find(a => a.id === id)
+      if (anecdoteToUpdate) {
+        const updatedAnecdote = { ...anecdoteToUpdate, votes: anecdoteToUpdate.votes + 1 }
+        await anecdotesService.update(id, updatedAnecdote)
+        set((state) => ({
+          anecdotes: state.anecdotes.map(a => a.id === id ? updatedAnecdote : a)
+        }))
+      }
+    },
     setFilter: value => set(() => ({ filter: value })),
-    initialize: anecdotes => set(() => ({ anecdotes }))
-
+    initialize: async () => {
+      const anecdotes = await anecdotesService.getAll()
+      console.log("Data from server", anecdotes);
+      set(() => ({ anecdotes }))
+    },
   },
 
 }))
