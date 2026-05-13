@@ -5,7 +5,7 @@ const AnecdoteList = () => {
     const anecdotes = useAnecdotes()
     const { showNotification } = useNotificationActions()
     const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
-    const { voteAnecdote } = useAnecdoteActions()
+    const { voteAnecdote, deleteAnecdote } = useAnecdoteActions()
 
     const filter = useFilter()
 
@@ -27,6 +27,12 @@ const AnecdoteList = () => {
                             console.log(`Voted anecdote with id ${anecdote.id}`)
                         }
                         }>vote</button>
+
+                        <button onClick={() => {
+                            deleteAnecdote(anecdote.id)
+                            showNotification(`You deleted '${anecdote.content}'`)
+                        }}>delete</button>
+
                     </div>
                 </div>
             ))}

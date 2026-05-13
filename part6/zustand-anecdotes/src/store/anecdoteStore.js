@@ -26,6 +26,15 @@ const useAnecdoteStore = create((set, get) => ({
       console.log("Data from server", anecdotes);
       set(() => ({ anecdotes }))
     },
+    deleteAnecdote: async (id) => {
+      const anecdoteToDelete = get().anecdotes.find(a => a.id === id)
+      const confirmed = window.confirm(`Are you sure you want to delete "${anecdoteToDelete.content}"? Only anecdote with 0 votes can be deleted!`)
+      if (!confirmed) return
+      await anecdotesService.remove(id)
+      set((state) => ({
+        anecdotes: state.anecdotes.filter(a => a.id !== id)
+      }))
+    }
   },
 
 }))
